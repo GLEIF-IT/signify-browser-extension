@@ -133,11 +133,16 @@ export function Config(props: any): JSX.Element {
   return (
     <>
       <Box paddingX={3} marginBottom={2}>
-        <Flex flexDirection="row" alignItems="flex-end" $flexGap={2}>
+        <label
+          htmlFor="vendor_url"
+          style={{ fontSize: "14px", lineHeight: "20px", fontWeight: 700, display: "block", marginBottom: "4px" }}
+        >
+          {formatMessage({ id: "config.vendorUrl.label" })}
+        </label>
+        <Flex flexDirection="row" alignItems="flex-start" $flexGap={2}>
           <Box flex={1}>
             <Input
               id="vendor_url"
-              label={formatMessage({ id: "config.vendorUrl.label" })}
               error={vendorUrlError}
               placeholder={formatMessage({ id: "config.vendorUrl.placeholder" })}
               value={vendorUrl}
