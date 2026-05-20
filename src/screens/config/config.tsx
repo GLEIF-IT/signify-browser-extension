@@ -132,21 +132,23 @@ export function Config(props: any): JSX.Element {
 
   return (
     <>
-      <Box paddingX={3} position="relative" marginBottom={2}>
-        <Input
-          id="vendor_url"
-          label={formatMessage({ id: "config.vendorUrl.label" })}
-          error={vendorUrlError}
-          placeholder={formatMessage({ id: "config.vendorUrl.placeholder" })}
-          value={vendorUrl}
-          onChange={(e) => setVendorUrl(e.target.value)}
-          onBlur={checkErrorVendorUrl}
-        />
-        <Box position="absolute" right="16px" bottom="-28px">
+      <Box paddingX={3} marginBottom={2}>
+        <Flex flexDirection="row" alignItems="flex-end" $flexGap={2}>
+          <Box flex={1}>
+            <Input
+              id="vendor_url"
+              label={formatMessage({ id: "config.vendorUrl.label" })}
+              error={vendorUrlError}
+              placeholder={formatMessage({ id: "config.vendorUrl.placeholder" })}
+              value={vendorUrl}
+              onChange={(e) => setVendorUrl(e.target.value)}
+              onBlur={checkErrorVendorUrl}
+            />
+          </Box>
           <Button handleClick={handleLoadVendorUrl}>
             <Text $color="">{formatMessage({ id: "action.load" })}</Text>
           </Button>
-        </Box>
+        </Flex>
       </Box>
       <Box>
         <Box paddingX={3}>
