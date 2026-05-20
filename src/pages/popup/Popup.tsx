@@ -11,9 +11,7 @@ import {
 import { isValidUrl } from "@shared/utils";
 import { ThemeProvider, styled } from "styled-components";
 import { LocaleProvider } from "@src/_locales";
-import { default as defaultVendor } from "@src/config/vendor.json";
-import { mergeVendorTheme } from "@config/merge-vendor-theme";
-import { IVendorData } from "@config/types";
+import { useVendorTheme } from "@config/useVendorTheme";
 import { Permission } from "@src/screens/permission";
 import { Signin } from "@src/screens/signin";
 import { Signup } from "@src/screens/signup";
@@ -83,9 +81,7 @@ const StyledLoaderBox = styled(Box)`
 `;
 
 export default function Popup(): JSX.Element {
-  const [vendorData, setVendorData] = useState<IVendorData>(() =>
-    mergeVendorTheme(defaultVendor as IVendorData)
-  );
+  const { vendorData, checkIfVendorDataExists: loadVendorData } = useVendorTheme();
   const [showConfig, setShowConfig] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -102,17 +98,6 @@ export default function Popup(): JSX.Element {
     const requestedVendorUrlChange =
       webRequestedPermissions[WEB_APP_PERMS.SET_VENDOR_URL];
     setPermissionData(requestedVendorUrlChange);
-  };
-
-  const checkIfVendorDataExists = async () => {
-    const resp = await configService.getAgentAndVendorInfo();
-    if (resp.vendorData) {
-      setVendorData(mergeVendorTheme(resp.vendorData));
-    }
-
-    if (!resp.agentUrl || !resp.hasOnboarded) {
-      setShowConfig(true);
-    }
   };
 
   const checkInitialConnection = async () => {
@@ -146,7 +131,13 @@ export default function Popup(): JSX.Element {
   };
 
   useEffect(() => {
-    checkIfVendorDataExists();
+    (async () => {
+      await loadVendorData();
+      const resp = await configService.getAgentAndVendorInfo();
+      if (!resp.agentUrl || !resp.hasOnboarded) {
+        setShowConfig(true);
+      }
+    })();
     checkInitialConnection();
   }, []);
 
@@ -213,7 +204,7 @@ export default function Popup(): JSX.Element {
       type: UI_EVENTS.authentication_disconnect_agent,
     });
     await checkConnection();
-    checkIfVendorDataExists();
+    loadVendorData();
     checkWebRequestedPermissions();
   };
 
@@ -251,7 +242,7 @@ export default function Popup(): JSX.Element {
                     isConnected={isConnected}
                     permissionData={permissionData}
                     afterCallback={() => {
-                      checkIfVendorDataExists();
+                      loadVendorData();
                       checkWebRequestedPermissions();
                     }}
                     handleDisconnect={handleDisconnectPermission}
@@ -282,7 +273,7 @@ export default function Popup(): JSX.Element {
                         isLoading={isLoading}
                         logo={logo}
                         title={vendorData?.title}
-                        afterSetUrl={checkIfVendorDataExists}
+                        afterSetUrl={loadVendorData}
                         vendorData={vendorData}
                         showConfig={showConfig}
                         setShowConfig={setShowConfig}
