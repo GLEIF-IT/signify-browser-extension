@@ -27,7 +27,7 @@ npm install               # install dependencies
 npm run build             # build for Chrome → dist/chrome/
 npm run build:firefox     # build for Firefox → dist/firefox/
 npm run dev               # watch mode via nodemon
-node scripts/build-extension-icons.mjs  # regenerate PNG icons from vlei-wallet-extension-logo.svg
+npm run build:icons       # regenerate PNG icons from vlei-wallet-extension-logo.svg
 ```
 
 Load the built extension: Chrome → chrome://extensions → Developer mode → Load unpacked → dist/chrome/
@@ -74,7 +74,7 @@ run. The theme is merged using `mergeVendorTheme()` and applied via styled-compo
 ## Security Rules
 
 - Sensitive data (passcode, `SignifyClient` instance) lives only in the background service worker
-- Passcode is zeroed after 5 minutes of inactivity (`PASSCODE_TIMEOUT` in `signify-connection.ts`)
+- Passcode is zeroed after 5 minutes of inactivity (`PASSCODE_TIMEOUT` in `signify.ts`)
 - Content script never receives passcodes or private key material
 - Signed headers are only generated if a signing association exists for the requesting domain
 - No `eval()`, no external scripts loaded in the extension
@@ -91,9 +91,7 @@ run. The theme is merged using `mergeVendorTheme()` and applied via styled-compo
 
 | Service | File | Responsibility |
 |---|---|---|
-| `signifyConnectionService` | `services/signify-connection.ts` | SignifyClient lifecycle, alarms, passcode timeout |
-| `signifyOperationsService` | `services/signify-operations.ts` | AID/credential/session operations |
-| `signifyService` | `services/signify.ts` | Combined re-export (use this in handlers) |
+| `signifyService` | `services/signify.ts` | SignifyClient lifecycle, alarms, passcode timeout, AID/credential/session operations |
 | `configService` | `services/config.ts` | Vendor URL, agent URL, boot URL, permissions |
 | `sessionService` | `services/session.ts` | Per-tab session tracking |
 | `userService` | `services/user.ts` | Controller ID, passcode storage |
@@ -104,4 +102,4 @@ run. The theme is merged using `mergeVendorTheme()` and applied via styled-compo
 
 - `signify-ts` is pinned to `0.3.0-rc1` — track upstream for stable release
 - No unit or integration test suite — Vitest setup is planned as a follow-on
-- Some handler data params are still typed `unknown` pending typed data interfaces per handler
+- Handler `data` params are typed `any` in `IHandler` — typed data interfaces are planned per handler
