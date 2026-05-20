@@ -28,6 +28,8 @@ export interface IVendorData {
     colors: {
       primary: string;
       secondary: string;
+      /** Turquoise highlight — GLEIF brand accent (#51DAC5) */
+      accent?: string;
       error: string;
       heading: string;
       text: string;

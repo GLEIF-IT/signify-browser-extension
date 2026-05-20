@@ -46,9 +46,10 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-family: "Facundo", "Calibri", system-ui, -apple-system, "Segoe UI",
+               "Helvetica Neue", Arial, sans-serif;
     font-size: 15px;
-    line-height: 1.45;
+    line-height: 1.4;
     letter-spacing: 0.01em;
     background: ${({ theme }) => theme?.colors?.bodyBg};
     color: ${({ theme }) => theme?.colors?.black};
@@ -58,12 +59,12 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   :root {
-    --toast-surface: ${({ theme }) => theme?.colors?.secondary ?? "#041E3A"};
+    --toast-surface: ${({ theme }) => theme?.colors?.secondary ?? "#027361"};
     --toast-on-surface: ${({ theme }) => theme?.colors?.subtext ?? "#fff"};
   }
 
   *:focus-visible {
-    outline: 2px solid ${({ theme }) => theme?.colors?.primary};
+    outline: 2px solid ${({ theme }) => theme?.colors?.accent ?? theme?.colors?.primary};
     outline-offset: 2px;
   }
 
@@ -78,7 +79,7 @@ export const GlobalStyles = createGlobalStyle`
 `;
 
 const StyledLoaderBox = styled(Box)`
-  color: ${(props) => props.theme?.colors?.primary};
+  color: ${(props) => props.theme?.colors?.accent ?? props.theme?.colors?.primary};
 `;
 
 export default function Popup(): JSX.Element {

@@ -23,7 +23,7 @@ const StyledButton = styled.button`
   background-color: ${(props) =>
     props.disabled
       ? props.theme?.colors?.muted ?? "#9BAEC2"
-      : props.theme?.colors?.primary};
+      : props.theme?.colors?.accent ?? props.theme?.colors?.primary};
   text-align: center;
   font-weight: 600;
   border-radius: 10px;
@@ -45,9 +45,9 @@ const StyledButton = styled.button`
   box-shadow: ${(props) =>
     props.disabled
       ? "none"
-      : "0 1px 2px rgba(0, 61, 165, 0.2), 0 2px 8px rgba(0, 61, 165, 0.15)"};
+      : "0 1px 2px rgba(0, 51, 54, 0.2), 0 2px 8px rgba(0, 51, 54, 0.15)"};
   &:hover:not(:disabled) {
-    filter: brightness(1.06);
+    filter: brightness(0.94);
   }
   &:active:not(:disabled) {
     transform: translateY(1px);
