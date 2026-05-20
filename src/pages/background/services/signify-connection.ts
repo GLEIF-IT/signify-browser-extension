@@ -7,6 +7,7 @@ import { SW_EVENTS } from "@config/event-types";
 
 export const PASSCODE_TIMEOUT = 5;
 
+// Module-level singleton — equivalent to the original factory closure (ES modules are singletons).
 let _client: SignifyClient | null = null;
 
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -135,5 +136,4 @@ export const signifyConnectionService = {
   generatePasscode,
   bootAndConnect,
   getControllerID,
-  getClient,
 };
