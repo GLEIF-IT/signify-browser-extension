@@ -6,11 +6,11 @@ export interface ObjectOfObject<T> {
   [key: string]: T;
 }
 
-export interface IHandler {
+export interface IHandler<T = unknown> {
   sendResponse: (response?: any) => void;
   tabId?: number;
   url?: string;
-  data?: any;
+  data?: T;
 }
 export interface IMessage<T> {
   type: string;
