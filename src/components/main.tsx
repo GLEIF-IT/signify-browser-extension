@@ -14,11 +14,26 @@ interface IMain {
   handleDisconnect: () => void;
   logo?: string;
   title?: string;
+  docsUrl?: string;
 }
 
 const StyledMainContainer = styled(Box)`
-  background-color: ${(props) => props.theme?.colors?.secondary};
+  flex: 1;
+  background-color: ${(props) =>
+    props.theme?.colors?.surface ?? props.theme?.colors?.bodyBg};
   color: ${(props) => props.theme?.colors?.text};
+  border: 1px solid
+    ${(props) =>
+      props.theme?.colors?.border ?? props.theme?.colors?.bodyBorder};
+  box-shadow: 0 1px 3px rgba(4, 30, 58, 0.06);
+`;
+
+const SectionHeading = styled.div`
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme?.colors?.border ?? theme?.colors?.bodyBorder};
 `;
 
 export function Main(props: IMain): JSX.Element {
@@ -86,26 +101,30 @@ export function Main(props: IMain): JSX.Element {
   };
 
   return (
-    <MainBox width="640px">
+    <MainBox width="640px" minHeight="640px" display="flex">
       <Sidebar
         active={activeSidebar}
         onClickLink={setActiveSidebar}
         onSignout={props.handleDisconnect}
         logo={props?.logo}
         title={props?.title}
+        docsUrl={props.docsUrl}
       />
       <StyledMainContainer
-        padding={2}
-        borderRadius={1}
+        padding={3}
+        borderRadius="12px"
         marginRight={3}
         marginTop={3}
+        marginBottom={3}
         marginLeft="192px"
       >
         <div>
-          <Text fontSize={3} fontWeight="bold" $color="subtext" $capitalize>
-            {activeSidebar?.title}
-          </Text>
-          <Box margin={3} maxHeight="576px" overflow="auto">
+          <SectionHeading>
+            <Text fontSize={3} fontWeight="700" $color="heading" $capitalize>
+              {activeSidebar?.title}
+            </Text>
+          </SectionHeading>
+          <Box marginTop={3} maxHeight="560px" overflow="auto">
             {renderItems()}
           </Box>
         </div>

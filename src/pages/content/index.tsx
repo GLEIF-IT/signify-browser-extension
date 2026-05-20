@@ -1,5 +1,8 @@
 import browser from "webextension-polyfill";
 import { createRoot } from "react-dom/client";
+import "@fontsource/source-sans-3/latin-400.css";
+import "@fontsource/source-sans-3/latin-600.css";
+import "@fontsource/source-sans-3/latin-700.css";
 import { LocaleProvider } from "@src/_locales";
 import { CS_EVENTS } from "@config/event-types";
 import { getExtId, sendMessage, sendMessageWithExtId } from "@src/shared/browser/runtime-utils";

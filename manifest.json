@@ -1,20 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Signify Browser Extension",
+  "name": "vLEI Wallet",
   "version": "0.0.1",
+  "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
   "background": {
     "service_worker": "src/pages/background/index.ts"
   },
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
-      "32": "public/32_keri_logo.png",
-      "128": "public/128_keri_logo.png"
+      "16": "public/icon-16.png",
+      "32": "public/icon-32.png",
+      "48": "public/icon-48.png",
+      "128": "public/icon-128.png"
     }
   },
   "icons": {
-    "32": "public/32_keri_logo.png",
-    "128": "public/128_keri_logo.png"
+    "16": "public/icon-16.png",
+    "32": "public/icon-32.png",
+    "48": "public/icon-48.png",
+    "128": "public/icon-128.png"
   },
   "permissions": ["activeTab", "storage", "alarms"],
   "content_scripts": [
@@ -26,7 +31,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["128_keri_logo.png"],
+      "resources": ["vlei-wallet-extension-logo.svg", "icon-128.png"],
       "matches": ["<all_urls>"]
     }
   ],

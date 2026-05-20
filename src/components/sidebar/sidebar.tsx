@@ -45,6 +45,7 @@ interface ISidebar {
   onSignout: () => void;
   title?: string;
   logo?: string;
+  docsUrl?: string;
 }
 
 export function Sidebar(props: ISidebar): JSX.Element {
@@ -54,7 +55,11 @@ export function Sidebar(props: ISidebar): JSX.Element {
       <Flex paddingX={3}>
         <StyledHeaderContainer>
           <StyledLiContainer>
-            <Header logo={props?.logo} title={props?.title} />
+            <Header
+              logo={props?.logo}
+              title={props?.title}
+              docsUrl={props?.docsUrl}
+            />
           </StyledLiContainer>
         </StyledHeaderContainer>
       </Flex>
@@ -113,7 +118,9 @@ export function Sidebar(props: ISidebar): JSX.Element {
         position="absolute"
         bottom="24px"
       >
-        <Text $color="bodyColor">Version: {manifest.version}</Text>
+        <Text fontSize={0} $color="sidebarMuted">
+          Version: {manifest.version}
+        </Text>
       </Flex>
     </StyledSidebar>
   );

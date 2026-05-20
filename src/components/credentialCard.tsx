@@ -53,14 +53,20 @@ export function CredentialCard({
           fontSize={0}
         >
           {credential.status?.et === "iss" ? (
-            <Flex flexDirection="column" alignItems="center" color="green">
-              <ValidIcon size={6} />
-              <Text $color="">{formatMessage({ id: "credential.valid" })}</Text>
+            <Flex flexDirection="column" alignItems="center" $flexGap={1}>
+              <Box color="success">
+                <ValidIcon size={6} />
+              </Box>
+              <Text $color="success" fontWeight="600">
+                {formatMessage({ id: "credential.valid" })}
+              </Text>
             </Flex>
           ) : (
-            <Flex flexDirection="column" alignItems="center" color="red">
-              <RevokedIcon size={6} />
-              <Text $color="">
+            <Flex flexDirection="column" alignItems="center" $flexGap={1}>
+              <Box color="danger">
+                <RevokedIcon size={6} />
+              </Box>
+              <Text $color="danger" fontWeight="600">
                 {formatMessage({ id: "credential.revoked" })}
               </Text>
             </Flex>

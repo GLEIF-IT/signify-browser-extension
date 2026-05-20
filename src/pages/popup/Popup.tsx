@@ -12,6 +12,7 @@ import { isValidUrl } from "@shared/utils";
 import { ThemeProvider, styled } from "styled-components";
 import { LocaleProvider } from "@src/_locales";
 import { default as defaultVendor } from "@src/config/vendor.json";
+import { mergeVendorTheme } from "@config/merge-vendor-theme";
 import { IVendorData } from "@config/types";
 import { Permission } from "@src/screens/permission";
 import { Signin } from "@src/screens/signin";
@@ -31,12 +32,39 @@ interface IConnect {
 }
 
 export const GlobalStyles = createGlobalStyle`
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #__root {
+    height: 100%;
+    min-height: 386px;
+  }
+
   body {
+    font-family: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
     background: ${({ theme }) => theme?.colors?.bodyBg};
-    color: ${({ theme }) => theme?.colors?.bodyColor};
+    color: ${({ theme }) => theme?.colors?.black};
     border: ${({ theme }) =>
       `1px solid ${theme?.colors?.bodyBorder ?? theme?.colors?.bodyBg}`};
     transition: background 0.2s ease-in, color 0.2s ease-in;
+  }
+
+  :root {
+    --toast-surface: ${({ theme }) => theme?.colors?.secondary ?? "#041E3A"};
+    --toast-on-surface: ${({ theme }) => theme?.colors?.subtext ?? "#fff"};
+  }
+
+  *:focus-visible {
+    outline: 2px solid ${({ theme }) => theme?.colors?.primary};
+    outline-offset: 2px;
   }
 
   ul {
@@ -54,7 +82,9 @@ const StyledLoaderBox = styled(Box)`
 `;
 
 export default function Popup(): JSX.Element {
-  const [vendorData, setVendorData] = useState<IVendorData>(defaultVendor);
+  const [vendorData, setVendorData] = useState<IVendorData>(() =>
+    mergeVendorTheme(defaultVendor as IVendorData)
+  );
   const [showConfig, setShowConfig] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -76,7 +106,7 @@ export default function Popup(): JSX.Element {
   const checkIfVendorDataExists = async () => {
     const resp = await configService.getAgentAndVendorInfo();
     if (resp.vendorData) {
-      setVendorData(resp.vendorData);
+      setVendorData(mergeVendorTheme(resp.vendorData));
     }
 
     if (!resp.agentUrl || !resp.hasOnboarded) {
@@ -186,21 +216,25 @@ export default function Popup(): JSX.Element {
     checkWebRequestedPermissions();
   };
 
-  const logo = vendorData?.logo ?? "/128_keri_logo.png";
+  const logo = vendorData?.logo ?? "/vlei-wallet-extension-logo.svg";
   return (
     <LocaleProvider>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
-          },
-        }}
-      />
       <ThemeProvider theme={vendorData?.theme}>
         <GlobalStyles />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              borderRadius: "12px",
+              background: "var(--toast-surface)",
+              color: "var(--toast-on-surface)",
+              fontFamily: '"Source Sans 3", "Segoe UI", system-ui, sans-serif',
+              fontSize: "14px",
+              boxShadow: "0 8px 24px rgba(4, 30, 58, 0.25)",
+            },
+          }}
+        />
         <div>
           {isCheckingInitialConnection ? (
             <Box width="300px">
@@ -237,6 +271,7 @@ export default function Popup(): JSX.Element {
                       handleDisconnect={handleDisconnect}
                       logo={logo}
                       title={vendorData?.title}
+                      docsUrl={vendorData?.docsUrl}
                     />
                   ) : (
                     <Box width="300px">

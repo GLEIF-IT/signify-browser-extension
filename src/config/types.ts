@@ -39,6 +39,20 @@ export interface IVendorData {
       bodyColor: string;
       cardColor: string;
       cardBg: string;
+      /** Muted UI (disabled buttons, hints) */
+      muted?: string;
+      /** Success / valid credential */
+      success?: string;
+      /** Revoked / danger (besides `error`) */
+      danger?: string;
+      /** Sidebar nav label when not active */
+      sidebarMuted?: string;
+      /** Main content canvas behind cards */
+      surface?: string;
+      /** Default card / input border */
+      border?: string;
+      /** Text on primary-filled controls */
+      onPrimary?: string;
     };
   };
 }
