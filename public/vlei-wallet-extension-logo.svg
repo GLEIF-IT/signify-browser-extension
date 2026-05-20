@@ -1,29 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128"
+     role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">vLEI Wallet</title>
+  <desc id="logo-desc">GLEIF vLEI Wallet browser extension logo</desc>
   <!-- Cyprus background -->
   <rect width="128" height="128" fill="#003336"/>
   <!-- "vLEI" wordmark — white, bold -->
   <text
     x="64"
-    y="52"
+    y="66"
     font-family="Calibri, 'Segoe UI', Arial, sans-serif"
     font-size="38"
     font-weight="700"
     fill="#FFFFFF"
     text-anchor="middle"
-    dominant-baseline="auto"
   >vLEI</text>
   <!-- Turquoise accent bar -->
-  <rect x="16" y="59" width="96" height="4" fill="#51DAC5" rx="2"/>
+  <rect x="16" y="73" width="96" height="4" fill="#51DAC5" rx="2"/>
   <!-- "WALLET" sub-label — white, spaced -->
   <text
     x="64"
-    y="80"
+    y="93"
     font-family="Calibri, 'Segoe UI', Arial, sans-serif"
     font-size="13"
     font-weight="400"
     fill="#FFFFFF"
     text-anchor="middle"
-    dominant-baseline="auto"
     letter-spacing="3"
   >WALLET</text>
 </svg>
