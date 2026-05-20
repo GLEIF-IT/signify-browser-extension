@@ -230,9 +230,9 @@ export default function Popup(): JSX.Element {
               borderRadius: "12px",
               background: "var(--toast-surface)",
               color: "var(--toast-on-surface)",
-              fontFamily: '"Source Sans 3", "Segoe UI", system-ui, sans-serif',
-              fontSize: "14px",
-              boxShadow: "0 8px 24px rgba(4, 30, 58, 0.25)",
+            fontFamily: '"Facundo", "Calibri", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
+            fontSize: "14px",
+            boxShadow: "0 8px 24px rgba(0, 51, 54, 0.25)",
             },
           }}
         />
