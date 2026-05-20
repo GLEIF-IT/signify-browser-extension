@@ -139,7 +139,7 @@ export function usePopup(
     await sendMessage({
       type: UI_EVENTS.authentication_disconnect_agent,
     });
-    checkConnection();
+    await checkConnection();
   }, [checkConnection]);
 
   const handleDisconnectPermission = useCallback(async () => {
@@ -147,8 +147,7 @@ export function usePopup(
       type: UI_EVENTS.authentication_disconnect_agent,
     });
     await checkConnection();
-    loadVendorData();
-    checkWebRequestedPermissions();
+    await Promise.all([loadVendorData(), checkWebRequestedPermissions()]);
   }, [checkConnection, loadVendorData, checkWebRequestedPermissions]);
 
   return {
@@ -161,7 +160,6 @@ export function usePopup(
     isLoading,
     connectError,
     isCheckingInitialConnection,
-    loadVendorData,
     checkWebRequestedPermissions,
     handleBootAndConnect,
     handleConnect,
