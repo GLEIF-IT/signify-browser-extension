@@ -81,7 +81,7 @@ const StyledLoaderBox = styled(Box)`
 `;
 
 export default function Popup(): JSX.Element {
-  const { vendorData, checkIfVendorDataExists: loadVendorData } = useVendorTheme();
+  const { vendorData, loadVendorData } = useVendorTheme();
   const [showConfig, setShowConfig] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -132,14 +132,13 @@ export default function Popup(): JSX.Element {
 
   useEffect(() => {
     (async () => {
-      await loadVendorData();
-      const resp = await configService.getAgentAndVendorInfo();
-      if (!resp.agentUrl || !resp.hasOnboarded) {
+      const resp = await loadVendorData();
+      if (!resp?.agentUrl || !resp?.hasOnboarded) {
         setShowConfig(true);
       }
     })();
     checkInitialConnection();
-  }, []);
+  }, [loadVendorData]);
 
   const handleBootAndConnect = async (passcode: string) => {
     const agentUrl = await configService.getAgentUrl();

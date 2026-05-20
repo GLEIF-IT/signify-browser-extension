@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IVendorData } from "@config/types";
 import { mergeVendorTheme } from "@config/merge-vendor-theme";
 import { configService } from "@pages/background/services/config";
@@ -9,12 +9,13 @@ export function useVendorTheme() {
     mergeVendorTheme(defaultVendor as IVendorData)
   );
 
-  const checkIfVendorDataExists = async () => {
+  const loadVendorData = useCallback(async () => {
     const resp = await configService.getAgentAndVendorInfo();
     if (resp.vendorData) {
       setVendorData(mergeVendorTheme(resp.vendorData));
     }
-  };
+    return resp;
+  }, []);
 
-  return { vendorData, checkIfVendorDataExists };
+  return { vendorData, loadVendorData };
 }
