@@ -76,6 +76,10 @@ export async function handleFetchSignifyHeaders({
   tabId,
   data,
 }: IHandler<IFetchSignifyHeadersData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     // const signin = await signinResource.getDomainSigninByIssueeName(
     //   url!,
@@ -89,9 +93,9 @@ export async function handleFetchSignifyHeaders({
     // }
     const isig = await signifyService.getSignedHeaders({
       origin: getDomainFromUrl(url!),
-      rurl: data!.url,
-      method: data!.method,
-      headers: data!.headers,
+      rurl: data.url,
+      method: data.method,
+      headers: data.headers,
       tabId: tabId!,
       // signin,
     });
@@ -160,15 +164,23 @@ export async function handleFetchCredentials({ sendResponse }: IHandler) {
 }
 
 export async function handleFetchCredential({ sendResponse, data }: IHandler<IFetchCredentialData>) {
-  const cred = await signifyService.getCredential(data!.id, data!.includeCESR);
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
+  const cred = await signifyService.getCredential(data.id, data.includeCESR);
   sendResponse({
     data: { credential: cred ?? null },
   });
 }
 
 export async function handleCreateIdentifier({ sendResponse, data }: IHandler<ICreateIdentifierData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
-    const resp = await signifyService.createAID(data!.name);
+    const resp = await signifyService.createAID(data.name);
     sendResponse({ data: { ...(resp ?? {}) } });
   } catch (error: any) {
     sendResponse({
@@ -178,9 +190,13 @@ export async function handleCreateIdentifier({ sendResponse, data }: IHandler<IC
 }
 
 export async function handleCreateSignin({ sendResponse, data }: IHandler<ICreateSigninData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const signins = await signinResource.getSignins();
   const currentUrl = await getCurrentUrl();
-  const { identifier, credential } = data!;
+  const { identifier, credential } = data;
   let signinExists = false;
   if (identifier && identifier.prefix) {
     signinExists = Boolean(
@@ -226,11 +242,15 @@ export async function handleCreateAttestationCredential({
   tabId,
   data,
 }: IHandler<ICreateAttestationCredentialData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     const resp = await signifyService.createAttestationCredential({
       origin: getDomainFromUrl(url!),
-      credData: data!.credData,
-      schemaSaid: data!.schemaSaid,
+      credData: data.credData,
+      schemaSaid: data.schemaSaid,
       tabId: tabId!
     });
     sendResponse({

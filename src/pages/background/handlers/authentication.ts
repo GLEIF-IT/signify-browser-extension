@@ -33,9 +33,13 @@ export async function handleDisconnectAgent({ sendResponse }: IHandler) {
 }
 
 export async function handleConnectAgent({ sendResponse, data }: IHandler<IConnectData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const resp = (await signifyService.connect(
-    data!.agentUrl,
-    data!.passcode
+    data.agentUrl,
+    data.passcode
   )) as any;
   if (resp?.error) {
     // TODO: improve error messages
@@ -51,16 +55,20 @@ export async function handleConnectAgent({ sendResponse, data }: IHandler<IConne
       },
     });
   } else {
-    await userService.setPasscode(data!.passcode);
+    await userService.setPasscode(data.passcode);
     sendResponse({ data: { success: true } });
   }
 }
 
 export async function handleBootConnectAgent({ sendResponse, data }: IHandler<IBootConnectData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const resp = (await signifyService.bootAndConnect(
-    data!.agentUrl,
-    data!.bootUrl,
-    data!.passcode
+    data.agentUrl,
+    data.bootUrl,
+    data.passcode
   )) as any;
   if (resp?.error) {
     sendResponse({
@@ -70,7 +78,7 @@ export async function handleBootConnectAgent({ sendResponse, data }: IHandler<IB
       },
     });
   } else {
-    await userService.setPasscode(data!.passcode);
+    await userService.setPasscode(data.passcode);
     sendResponse({ data: { success: true } });
   }
 }
@@ -86,12 +94,16 @@ export async function handleGetAuthData({
   url,
   data,
 }: IHandler<IGetAuthData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     const resp = await signifyService.authorizeSelectedSignin({
       tabId: tabId!,
-      signin: data!.signin,
+      signin: data.signin,
       origin: getDomainFromUrl(url!),
-      config: data!.config,
+      config: data.config,
     });
 
     sendResponse({
