@@ -2,7 +2,7 @@ body {
   min-height: 386px;
   height: 100%;
   margin: 0;
-  font-family: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Facundo", "Calibri", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;

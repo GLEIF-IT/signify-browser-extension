@@ -34,7 +34,7 @@ const StyledMain = styled(Box)`
   background: ${(props) =>
     props.theme?.colors?.surface ?? props.theme?.colors?.bodyBg};
   color: ${(props) => props.theme?.colors?.black};
-  box-shadow: 0 8px 32px rgba(4, 30, 58, 0.12), 0 2px 8px rgba(4, 30, 58, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 51, 54, 0.12), 0 2px 8px rgba(0, 51, 54, 0.08);
 `;
 
 const StyledClose = styled(IconButton)`
@@ -189,11 +189,11 @@ export function Dialog({
           duration: 4000,
           style: {
             borderRadius: "12px",
-            background: "#041E3A",
-            color: "#F4F7FB",
-            fontFamily: '"Source Sans 3", "Segoe UI", system-ui, sans-serif',
+            background: "#003336",
+            color: "#FFFFFF",
+            fontFamily: '"Facundo", "Calibri", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
             fontSize: "14px",
-            boxShadow: "0 8px 24px rgba(4, 30, 58, 0.25)",
+            boxShadow: "0 8px 24px rgba(0, 51, 54, 0.25)",
           },
         }}
       />

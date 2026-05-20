@@ -64,7 +64,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   *:focus-visible {
-    outline: 2px solid ${({ theme }) => theme?.colors?.accent ?? theme?.colors?.primary};
+    outline: 2px solid ${({ theme }) => theme?.colors?.primary};
     outline-offset: 2px;
   }
 
