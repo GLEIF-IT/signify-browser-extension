@@ -1,33 +1,14 @@
-import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { createGlobalStyle } from "styled-components";
-import { UI_EVENTS } from "@config/event-types";
-import { sendMessage } from "@src/shared/browser/runtime-utils";
-import { sendMessageTab, getCurrentTab } from "@src/shared/browser/tabs-utils";
-import {
-  WEB_APP_PERMS,
-  configService,
-} from "@pages/background/services/config";
-import { isValidUrl } from "@shared/utils";
 import { ThemeProvider, styled } from "styled-components";
 import { LocaleProvider } from "@src/_locales";
 import { useVendorTheme } from "@config/useVendorTheme";
+import { usePopup } from "./usePopup";
 import { Permission } from "@src/screens/permission";
 import { Signin } from "@src/screens/signin";
 import { Signup } from "@src/screens/signup";
 import { Loader, Box } from "@components/ui";
 import { Main } from "@components/main";
-
-interface IBootAndConnect {
-  passcode?: string;
-  agentUrl?: string;
-  bootUrl: string;
-}
-
-interface IConnect {
-  passcode?: string;
-  agentUrl?: string;
-}
 
 export const GlobalStyles = createGlobalStyle`
   *,
@@ -82,130 +63,22 @@ const StyledLoaderBox = styled(Box)`
 
 export default function Popup(): JSX.Element {
   const { vendorData, loadVendorData } = useVendorTheme();
-  const [showConfig, setShowConfig] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-
-  const [permissionData, setPermissionData] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [connectError, setConnectError] = useState("");
-  const [isCheckingInitialConnection, setIsCheckingInitialConnection] =
-    useState(false);
-
-  const checkWebRequestedPermissions = async () => {
-    const webRequestedPermissions =
-      await configService.getWebRequestedPermissions();
-    const requestedVendorUrlChange =
-      webRequestedPermissions[WEB_APP_PERMS.SET_VENDOR_URL];
-    setPermissionData(requestedVendorUrlChange);
-  };
-
-  const checkInitialConnection = async () => {
-    setIsCheckingInitialConnection(true);
-    await checkWebRequestedPermissions();
-    await checkConnection();
-    setIsCheckingInitialConnection(false);
-  };
-
-  const checkConnection = async () => {
-    const { data } = await sendMessage({
-      type: UI_EVENTS.authentication_check_agent_connection,
-    });
-    setIsConnected(!!data.isConnected);
-    if (data.isConnected) {
-      try {
-        const tab = await getCurrentTab();
-        const { data } = await sendMessageTab(tab.id!, {
-          type: "tab",
-          subtype: "get-tab-state",
-        });
-        sendMessageTab(tab.id!, {
-          type: "tab",
-          subtype: "reload-state",
-          eventType: data?.tabState,
-        });
-      } catch (error) {
-        console.log("Error in popup from sendMessageTab", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      const resp = await loadVendorData();
-      if (!resp?.agentUrl || !resp?.hasOnboarded) {
-        setShowConfig(true);
-      }
-    })();
-    checkInitialConnection();
-  }, [loadVendorData]);
-
-  const handleBootAndConnect = async (passcode: string) => {
-    const agentUrl = await configService.getAgentUrl();
-    const bootUrl = await configService.getBootUrl();
-    const urlObject = isValidUrl(agentUrl);
-
-    if (!urlObject || !urlObject?.origin) return;
-    setIsLoading(true);
-
-    const { data, error } = await sendMessage<IBootAndConnect>({
-      type: UI_EVENTS.authentication_boot_connect_agent,
-      data: {
-        passcode,
-        agentUrl,
-        bootUrl,
-      },
-    });
-
-    setIsLoading(false);
-    if (error) {
-      setConnectError(error?.message);
-      setTimeout(() => {
-        setConnectError("");
-      }, 3000);
-    } else {
-      setShowSignup(false);
-      await checkConnection();
-    }
-  };
-
-  const handleConnect = async (passcode: string) => {
-    setIsLoading(true);
-    const agentUrl = await configService.getAgentUrl();
-    const { data, error } = await sendMessage<IConnect>({
-      type: UI_EVENTS.authentication_connect_agent,
-      data: {
-        passcode,
-        agentUrl,
-      },
-    });
-
-    setIsLoading(false);
-    if (error) {
-      setConnectError(error?.message);
-      setTimeout(() => {
-        setConnectError("");
-      }, 3000);
-    } else {
-      await checkConnection();
-    }
-  };
-
-  const handleDisconnect = async () => {
-    await sendMessage({
-      type: UI_EVENTS.authentication_disconnect_agent,
-    });
-    checkConnection();
-  };
-
-  const handleDisconnectPermission = async () => {
-    await sendMessage({
-      type: UI_EVENTS.authentication_disconnect_agent,
-    });
-    await checkConnection();
-    loadVendorData();
-    checkWebRequestedPermissions();
-  };
+  const {
+    showConfig,
+    setShowConfig,
+    showSignup,
+    setShowSignup,
+    permissionData,
+    isConnected,
+    isLoading,
+    connectError,
+    isCheckingInitialConnection,
+    checkWebRequestedPermissions,
+    handleBootAndConnect,
+    handleConnect,
+    handleDisconnect,
+    handleDisconnectPermission,
+  } = usePopup(loadVendorData);
 
   const logo = vendorData?.logo ?? "/vlei-wallet-extension-logo.svg";
   return (
