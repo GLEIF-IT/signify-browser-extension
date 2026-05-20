@@ -74,7 +74,7 @@ run. The theme is merged using `mergeVendorTheme()` and applied via styled-compo
 ## Security Rules
 
 - Sensitive data (passcode, `SignifyClient` instance) lives only in the background service worker
-- Passcode is zeroed after 5 minutes of inactivity (`PASSCODE_TIMEOUT` in `signify.ts`)
+- Passcode is zeroed after 5 minutes of inactivity (`PASSCODE_TIMEOUT` in `signify-connection.ts`)
 - Content script never receives passcodes or private key material
 - Signed headers are only generated if a signing association exists for the requesting domain
 - No `eval()`, no external scripts loaded in the extension
@@ -91,7 +91,9 @@ run. The theme is merged using `mergeVendorTheme()` and applied via styled-compo
 
 | Service | File | Responsibility |
 |---|---|---|
-| `signifyService` | `services/signify.ts` | SignifyClient lifecycle, alarms, passcode timeout, AID/credential/session operations |
+| `signifyConnectionService` | `services/signify-connection.ts` | SignifyClient lifecycle, alarms, passcode timeout |
+| `signifyOperationsService` | `services/signify-operations.ts` | AID/credential/session operations |
+| `signifyService` | `services/signify.ts` | Combined re-export facade (use this in handlers) |
 | `configService` | `services/config.ts` | Vendor URL, agent URL, boot URL, permissions |
 | `sessionService` | `services/session.ts` | Per-tab session tracking |
 | `userService` | `services/user.ts` | Controller ID, passcode storage |
