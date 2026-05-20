@@ -9,6 +9,7 @@ A secure browser extension for website authentication using KERIA agents and sig
 - [Security Considerations](#security-considerations)
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
+- [Developer Guide (CLAUDE.md)](CLAUDE.md)
 
 ## Overview
 This browser extension was initially developed as part of Provenant's [Bounty PB311.1](https://docs.google.com/document/d/1mq82RDRGfoOMCs8sR8Cuj_hMC5i1_aP7e6DVqp8o13g/edit?usp=sharing)
