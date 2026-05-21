@@ -1,8 +1,16 @@
 {
   "name": "signify-browser-extension",
+<<<<<<< Updated upstream
   "displayName": "vLEI Wallet",
   "version": "0.0.1",
   "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
+=======
+  "displayName": "Polaris",
+  "version": "0.1.0",
+  "description": "Authenticate to websites and present ACDC credentials using KERI AIDs from a KERIA agent.",
+  "author": "Web of Trust",
+  "homepage": "https://github.com/weboftrust/signify-browser-extension",
+>>>>>>> Stashed changes
   "license": "APACHE 2.0",
   "repository": {
     "type": "git",

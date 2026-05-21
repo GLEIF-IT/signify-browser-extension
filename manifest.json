@@ -1,14 +1,22 @@
 {
   "manifest_version": 3,
+<<<<<<< Updated upstream
   "name": "vLEI Wallet",
   "version": "0.0.1",
   "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
+=======
+  "name": "Signify Browser Extension",
+  "version": "0.1.0",
+  "author": "Web of Trust",
+  "homepage_url": "https://github.com/weboftrust/signify-browser-extension",
+>>>>>>> Stashed changes
   "background": {
     "service_worker": "src/pages/background/index.ts"
   },
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
+<<<<<<< Updated upstream
       "16": "public/icon-16.png",
       "32": "public/icon-32.png",
       "48": "public/icon-48.png",
@@ -20,6 +28,19 @@
     "32": "public/icon-32.png",
     "48": "public/icon-48.png",
     "128": "public/icon-128.png"
+=======
+      "16": "public/16_keri_logo.png",
+      "32": "public/32_keri_logo.png",
+      "48": "public/48_keri_logo.png",
+      "128": "public/128_keri_logo.png"
+    }
+  },
+  "icons": {
+    "16": "public/16_keri_logo.png",
+    "32": "public/32_keri_logo.png",
+    "48": "public/48_keri_logo.png",
+    "128": "public/128_keri_logo.png"
+>>>>>>> Stashed changes
   },
   "permissions": ["activeTab", "storage", "alarms"],
   "content_scripts": [
