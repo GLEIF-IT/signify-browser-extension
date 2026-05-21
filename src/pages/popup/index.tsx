@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import { SW_EVENTS } from "@config/event-types";
 import { getExtId } from "@src/shared/browser/runtime-utils";
 import Popup from "@pages/popup/Popup";
+import "@fontsource/source-sans-3/latin-400.css";
+import "@fontsource/source-sans-3/latin-600.css";
+import "@fontsource/source-sans-3/latin-700.css";
 import "@pages/popup/index.css";
 
 function init() {

@@ -1,7 +1,23 @@
 import { signifyService } from "@pages/background/services/signify";
 import { userService } from "@pages/background/services/user";
 import { getDomainFromUrl } from "@shared/utils";
-import { IHandler } from "@config/types";
+import { IHandler, ISignin, ISessionConfig } from "@config/types";
+
+interface IConnectData {
+  agentUrl: string;
+  passcode: string;
+}
+
+interface IBootConnectData {
+  agentUrl: string;
+  bootUrl: string;
+  passcode: string;
+}
+
+interface IGetAuthData {
+  signin: ISignin;
+  config?: ISessionConfig;
+}
 
 export async function handleCheckAgentConnection({
   sendResponse,
@@ -16,7 +32,11 @@ export async function handleDisconnectAgent({ sendResponse }: IHandler) {
   sendResponse({ data: { isConnected: false } });
 }
 
-export async function handleConnectAgent({ sendResponse, data }: IHandler) {
+export async function handleConnectAgent({ sendResponse, data }: IHandler<IConnectData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const resp = (await signifyService.connect(
     data.agentUrl,
     data.passcode
@@ -40,7 +60,11 @@ export async function handleConnectAgent({ sendResponse, data }: IHandler) {
   }
 }
 
-export async function handleBootConnectAgent({ sendResponse, data }: IHandler) {
+export async function handleBootConnectAgent({ sendResponse, data }: IHandler<IBootConnectData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const resp = (await signifyService.bootAndConnect(
     data.agentUrl,
     data.bootUrl,
@@ -69,7 +93,11 @@ export async function handleGetAuthData({
   tabId,
   url,
   data,
-}: IHandler) {
+}: IHandler<IGetAuthData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     const resp = await signifyService.authorizeSelectedSignin({
       tabId: tabId!,

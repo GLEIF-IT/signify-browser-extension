@@ -1,0 +1,166 @@
+/* ============================================================
+   Site stylesheet,layers on top of gleif-tokens.css.
+
+   The brand deck covers palette + typography only. Anything
+   below that isn't covered (component shapes, state colors,
+   surface layering, mono stack) is flagged inline.
+
+   GLEIF brand has no dark-mode spec, so the site is light-only.
+   ============================================================ */
+
+:root {
+  /* FLAG: mono stack,brand deck doesn't specify a code font. */
+  --font-mono: 'SF Mono', 'Consolas', monospace;
+  /* FLAG: border radius,brand deck is not a component library. */
+  --radius: 6px;
+
+  /* Surface layering: brand covers bg and surface (both white). */
+  --color-surface-2: #f0f0f0;
+  --color-surface-3: #e5e5e5;
+  --color-border:    #d4d4d4;
+
+  --color-primary:       var(--color-accent);      /* turquoise */
+  --color-primary-hover: var(--color-accent-mid);  /* jade */
+  --color-brand:         var(--gleif-cyprus);
+
+  /* FLAG: state colors,no brand mapping for success. */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error:   #dc2626;
+  --color-info:    #0284c7;
+
+  /* IPEX-specific: role tint for Discloser / Disclosee lanes.
+     FLAG: role tints,not in brand deck; chosen from Detail palette. */
+  --role-discloser: var(--gleif-turquoise);
+  --role-disclosee: var(--gleif-honey);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-header {
+  background: var(--color-surface);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.site-header .logo {
+  width: 40px;
+  height: 40px;
+}
+
+.site-header h1 {
+  font-size: var(--font-size-h3);
+  color: var(--color-accent-deep);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  line-height: var(--line-height-heading);
+}
+
+.site-header .subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .site-header .subtitle {
+    display: none;
+  }
+}
+
+button {
+  background: var(--color-primary);
+  color: var(--gleif-cyprus);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: background 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge.discloser {
+  background: color-mix(in srgb, var(--role-discloser) 30%, transparent);
+  color: var(--gleif-cyprus);
+}
+
+.badge.disclosee {
+  background: color-mix(in srgb, var(--role-disclosee) 35%, transparent);
+  color: var(--gleif-cyprus);
+}
+
+.page-header h2 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 0.25rem;
+}
+
+.page-header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}

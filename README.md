@@ -8,6 +8,7 @@ A secure browser extension for website authentication using KERIA agents and sig
 - [Architecture](#architecture)
 - [Security Considerations](#security-considerations)
 - [Troubleshooting](#troubleshooting)
+- [Developer Guide (CLAUDE.md)](CLAUDE.md)
 
 ## Overview
 

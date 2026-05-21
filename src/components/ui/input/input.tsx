@@ -30,17 +30,31 @@ const StyledInput = styled.input<Pick<IInput, "error">>`
   -o-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: 10px;
   display: block;
   font-size: 14px;
   line-height: 20px;
   width: 100%;
-  padding: 8px;
+  padding: 10px 12px;
   border: ${({ theme, error }) =>
-    `1px solid ${error ? theme?.colors?.error : theme?.colors?.bodyBorder}`};
-  background-color: ${({ theme }) => theme?.colors?.bodyBg};
+    `1px solid ${
+      error
+        ? theme?.colors?.error
+        : theme?.colors?.border ?? theme?.colors?.bodyBorder
+    }`};
+  background-color: ${({ theme }) => theme?.colors?.cardBg ?? theme?.colors?.bodyBg};
   color: ${({ theme, error }) =>
-    error ? theme?.colors?.error : theme?.colors?.bodyColor};
+    error ? theme?.colors?.error : theme?.colors?.black};
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  &:focus {
+    outline: none;
+    border-color: ${({ theme, error }) =>
+      error ? theme?.colors?.error : theme?.colors?.primary};
+    box-shadow: ${({ theme, error }) =>
+      error
+        ? "none"
+        : `0 0 0 3px ${theme?.colors?.primary}22`};
+  }
 `;
 
 const StyledInputError = styled.p`

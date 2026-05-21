@@ -6,11 +6,19 @@ interface IStyledMenu {
 }
 
 export const StyledMenu = styled(Flex)<IStyledMenu>`
+  cursor: pointer;
+  color: ${({ $isActive, theme }) =>
+    $isActive
+      ? theme?.colors?.subtext
+      : theme?.colors?.sidebarMuted ?? "rgba(255,255,255,0.72)"};
   background-color: ${({ $isActive, theme }) =>
-    $isActive ? theme?.colors?.secondary : ""};
-  color: ${({ $isActive, theme }) => ($isActive ? theme?.colors?.subtext : "")};
+    $isActive ? "rgba(255,255,255,0.1)" : "transparent"};
+  border: 1px solid
+    ${({ $isActive, theme }) =>
+      $isActive ? "rgba(255,255,255,0.14)" : "transparent"};
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   &:hover {
-    background-color: ${({ theme }) => theme?.colors?.secondary};
+    background-color: rgba(255, 255, 255, 0.08);
     color: ${({ theme }) => theme?.colors?.subtext};
   }
 `;
@@ -20,7 +28,12 @@ export const StyledSidebar = styled.aside`
   left: 0px;
   z-index: 40;
   width: 192px;
-  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme?.colors?.secondary};
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 4px 0 24px rgba(4, 30, 58, 0.12);
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
@@ -31,8 +44,12 @@ export const StyledSidebar = styled.aside`
 `;
 
 export const StyledBottomMenu = styled(Flex)`
+  cursor: pointer;
+  color: ${({ theme }) =>
+    theme?.colors?.sidebarMuted ?? "rgba(255,255,255,0.72)"};
+  transition: background-color 0.15s ease, color 0.15s ease;
   &:hover {
-    background-color: ${({ theme }) => theme?.colors?.error};
+    background-color: rgba(196, 18, 48, 0.18);
     color: ${({ theme }) => theme?.colors?.subtext};
   }
 `;

@@ -6,11 +6,11 @@ export interface ObjectOfObject<T> {
   [key: string]: T;
 }
 
-export interface IHandler {
+export interface IHandler<T = unknown> {
   sendResponse: (response?: any) => void;
   tabId?: number;
   url?: string;
-  data?: any;
+  data?: T;
 }
 export interface IMessage<T> {
   type: string;
@@ -28,6 +28,8 @@ export interface IVendorData {
     colors: {
       primary: string;
       secondary: string;
+      /** Turquoise highlight — GLEIF brand accent (#51DAC5) */
+      accent?: string;
       error: string;
       heading: string;
       text: string;
@@ -39,6 +41,20 @@ export interface IVendorData {
       bodyColor: string;
       cardColor: string;
       cardBg: string;
+      /** Muted UI (disabled buttons, hints) */
+      muted?: string;
+      /** Success / valid credential */
+      success?: string;
+      /** Revoked / danger (besides `error`) */
+      danger?: string;
+      /** Sidebar nav label when not active */
+      sidebarMuted?: string;
+      /** Main content canvas behind cards */
+      surface?: string;
+      /** Default card / input border */
+      border?: string;
+      /** Text on primary-filled controls */
+      onPrimary?: string;
     };
   };
 }

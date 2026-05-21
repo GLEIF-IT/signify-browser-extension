@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { Button, Box, Flex, Input, Text } from "@components/ui";
+import { Button, Box, Flex, Input, Text, Card } from "@components/ui";
 import { useIntl } from "react-intl";
 
 interface ISignin {
@@ -12,8 +12,9 @@ interface ISignin {
 }
 
 const StyledLogo = styled.img`
-  width: 128px;
-  height: 128px;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 `;
 
 export function Signin(props: ISignin): JSX.Element {
@@ -50,28 +51,34 @@ export function Signin(props: ISignin): JSX.Element {
   };
 
   return (
-    <>
-      <Flex flexDirection="row" justifyContent="center">
-        <StyledLogo src={props.logo} alt="logo" />
-      </Flex>
-      <Box paddingX={3} paddingY={2}>
-        <Input
-          type="password"
-          id="passcode"
-          testid="signin-passcode"
-          errorTestid="signin-passcode-error"
-          error={passcodeError}
-          placeholder={passcodeMessage}
-          value={passcode}
-          onChange={(e) => setPasscode(e.target.value)}
-          onBlur={onBlurPasscode}
-        />
-      </Box>
-      <Flex flexDirection="row" justifyContent="center">
-        <Button testid="signin-connect" handleClick={handleConnect} isLoading={props.isLoading}>
-          <Text $color="">{connectMessage}</Text>
-        </Button>
-      </Flex>
-    </>
+    <Card>
+      <>
+        <Flex flexDirection="row" justifyContent="center" marginBottom={3}>
+          <StyledLogo src={props.logo} alt="" />
+        </Flex>
+        <Box paddingX={0} paddingY={0}>
+          <Input
+            type="password"
+            id="passcode"
+            testid="signin-passcode"
+            errorTestid="signin-passcode-error"
+            error={passcodeError}
+            placeholder={passcodeMessage}
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
+            onBlur={onBlurPasscode}
+          />
+        </Box>
+        <Flex flexDirection="row" justifyContent="center" marginTop={3}>
+          <Button
+            testid="signin-connect"
+            handleClick={handleConnect}
+            isLoading={props.isLoading}
+          >
+            <Text $color="onPrimary">{connectMessage}</Text>
+          </Button>
+        </Flex>
+      </>
+    </Card>
   );
 }

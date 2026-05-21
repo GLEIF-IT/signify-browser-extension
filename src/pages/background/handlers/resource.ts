@@ -1,8 +1,41 @@
 import * as signinResource from "@pages/background/resource/signin";
 import { signifyService } from "@pages/background/services/signify";
 import { getDomainFromUrl } from "@shared/utils";
-import { IHandler, IIdentifier, ICredential } from "@config/types";
+import { IHandler, IIdentifier, ICredential, ISignin } from "@config/types";
 import { getCurrentUrl } from "@pages/background/utils";
+
+interface IFetchSignifyHeadersData {
+  url: string;
+  method: string;
+  headers: HeadersInit;
+}
+
+interface IFetchCredentialData {
+  id: string;
+  includeCESR?: boolean;
+}
+
+interface ICreateIdentifierData {
+  name: string;
+}
+
+interface ICreateSigninData {
+  identifier?: IIdentifier;
+  credential?: ICredential;
+}
+
+interface ICreateAttestationCredentialData {
+  credData: unknown;
+  schemaSaid: string;
+}
+
+interface IUpdateAutoSigninData {
+  signin?: ISignin;
+}
+
+interface IDeleteSigninData {
+  id?: string;
+}
 
 export async function handleFetchAutoSigninSignature({
   sendResponse,
@@ -42,7 +75,11 @@ export async function handleFetchSignifyHeaders({
   url,
   tabId,
   data,
-}: IHandler) {
+}: IHandler<IFetchSignifyHeadersData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     // const signin = await signinResource.getDomainSigninByIssueeName(
     //   url!,
@@ -126,14 +163,22 @@ export async function handleFetchCredentials({ sendResponse }: IHandler) {
   }
 }
 
-export async function handleFetchCredential({ sendResponse, data }: IHandler) {
+export async function handleFetchCredential({ sendResponse, data }: IHandler<IFetchCredentialData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const cred = await signifyService.getCredential(data.id, data.includeCESR);
   sendResponse({
     data: { credential: cred ?? null },
   });
 }
 
-export async function handleCreateIdentifier({ sendResponse, data }: IHandler) {
+export async function handleCreateIdentifier({ sendResponse, data }: IHandler<ICreateIdentifierData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     const resp = await signifyService.createAID(data.name);
     sendResponse({ data: { ...(resp ?? {}) } });
@@ -144,7 +189,11 @@ export async function handleCreateIdentifier({ sendResponse, data }: IHandler) {
   }
 }
 
-export async function handleCreateSignin({ sendResponse, data }: IHandler) {
+export async function handleCreateSignin({ sendResponse, data }: IHandler<ICreateSigninData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   const signins = await signinResource.getSignins();
   const currentUrl = await getCurrentUrl();
   const { identifier, credential } = data;
@@ -192,7 +241,11 @@ export async function handleCreateAttestationCredential({
   url,
   tabId,
   data,
-}: IHandler) {
+}: IHandler<ICreateAttestationCredentialData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
   try {
     const resp = await signifyService.createAttestationCredential({
       origin: getDomainFromUrl(url!),
@@ -210,7 +263,7 @@ export async function handleCreateAttestationCredential({
   }
 }
 
-export async function handleUpdateAutoSignin({ sendResponse, data }: IHandler) {
+export async function handleUpdateAutoSignin({ sendResponse, data }: IHandler<IUpdateAutoSigninData>) {
   const resp = await signinResource.updateDomainAutoSignin(data?.signin);
   sendResponse({
     data: {
@@ -219,7 +272,7 @@ export async function handleUpdateAutoSignin({ sendResponse, data }: IHandler) {
   });
 }
 
-export async function handleDeleteSignin({ sendResponse, data }: IHandler) {
+export async function handleDeleteSignin({ sendResponse, data }: IHandler<IDeleteSigninData>) {
   const resp = await signinResource.deleteSigninById(data?.id);
   sendResponse({
     data: {

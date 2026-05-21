@@ -1,0 +1,182 @@
+/* ============================================================
+   GLEIF Brand Tokens
+
+   Status: Unofficial extraction for mini-site consistency.
+   ============================================================ */
+
+:root {
+  /* ---------- Core palette ----------
+     Primary brand colors. Anchors identity. */
+  --gleif-cyprus:    #003336;
+  --gleif-turquoise: #51DAC5;
+  --gleif-black:     #000000;
+  --gleif-white:     #FFFFFF;
+
+  /* ---------- Expression palette ----------
+     Backgrounds, gradients, graphic elements.
+     Supports Core, adds depth and energy. */
+  --gleif-jade:   #28999C;
+  --gleif-spring: #DFFBC0;
+  --gleif-fern:   #027361;
+
+  /* ---------- Detail palette ----------
+     Sparingly for charts, diagrams, small accents.
+     Do not use as primary surfaces. */
+  --gleif-honey:    #FFA300;
+  --gleif-amber:    #FF6845;
+  --gleif-lava:     #DC1A45;
+  --gleif-azure:    #19A5FF;
+  --gleif-damson:   #403E78;
+  --gleif-lavender: #7764B1;
+  --gleif-cloud:    #E5DCE6;
+  --gleif-shell:    #CCAEA4;
+  --gleif-smoke:    #6A7B7F;
+
+  /* ---------- Semantic aliases ----------
+     Prefer these in components over raw palette names. */
+  --color-bg:            var(--gleif-white);
+  --color-bg-inverse:    var(--gleif-cyprus);
+  --color-surface:       var(--gleif-white);
+  --color-surface-muted: var(--gleif-cloud);
+
+  --color-text:          var(--gleif-cyprus);  /* headings on light */
+  --color-text-body:     var(--gleif-black);   /* body copy */
+  --color-text-muted:    var(--gleif-smoke);
+  --color-text-inverse:  var(--gleif-white);
+
+  --color-accent:        var(--gleif-turquoise);
+  --color-accent-deep:   var(--gleif-fern);
+  --color-accent-mid:    var(--gleif-jade);
+
+  --color-link:          var(--gleif-fern);
+  --color-link-hover:    var(--gleif-cyprus);
+
+  /* ---------- Typography ----------
+     Facundo is licensed; until webfont files are installed
+     from Frontify, rendering falls back to Calibri / system.
+     Guidelines explicitly allow Calibri as the backup. */
+  --font-sans:
+    "Facundo",
+    "Calibri",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+  --font-weight-regular:  400;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --line-height-heading: 1.1;   /* 110% per guidelines */
+  --line-height-body:    1.4;   /* 140% per guidelines */
+
+  /* Size floors from guidelines: body 9pt min, legal 5pt min.
+     Converted at 16px root: 9pt ≈ 12px, 5pt ≈ 7px. */
+  --font-size-body-min:  0.75rem;
+  --font-size-legal-min: 0.4375rem;
+
+  /* Indicative type scale — adjust per site as needed.
+     Guidelines say: "Limit the number of font sizes, weights
+     and colors to give a logical hierarchy to information." */
+  --font-size-h1:   3rem;     /* 48px */
+  --font-size-h2:   2.25rem;  /* 36px */
+  --font-size-h3:   1.5rem;   /* 24px */
+  --font-size-h4:   1.25rem;  /* 20px */
+  --font-size-body: 1rem;     /* 16px */
+  --font-size-sm:   0.875rem; /* 14px */
+}
+
+/* ============================================================
+   Base styles
+   ============================================================ */
+
+body {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-body);
+  background: var(--color-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  /* Main headings use Regular per guidelines; Bold is for
+     smaller pulled-out keywords within body copy. */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-heading);
+  color: var(--color-text);
+  /* Sentence case is enforced in content, not via CSS. */
+}
+
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
+h3 { font-size: var(--font-size-h3); }
+h4 { font-size: var(--font-size-h4); }
+
+/* Paragraph spacing set to 50% of font size per guidelines. */
+p + p {
+  margin-top: 0.5em;
+}
+
+strong, b, .keyword {
+  font-weight: var(--font-weight-bold);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* ============================================================
+   Inverse surfaces (dark backgrounds)
+   ============================================================ */
+
+.surface-inverse {
+  background: var(--color-bg-inverse);
+  color: var(--color-text-inverse);
+}
+.surface-inverse h1,
+.surface-inverse h2,
+.surface-inverse h3,
+.surface-inverse h4,
+.surface-inverse h5,
+.surface-inverse h6 {
+  color: var(--color-text-inverse);
+}
+.surface-inverse a {
+  color: var(--gleif-turquoise);
+}
+
+/* ============================================================
+   Gradients — Core + Expression pairings
+   Guidelines describe these as "soft" / "subtle".
+   Use sparingly on hero sections and feature panels.
+   ============================================================ */
+
+.bg-gradient-cyprus-spring {
+  background: linear-gradient(180deg,
+    var(--gleif-cyprus) 0%,
+    var(--gleif-spring) 100%);
+}
+.bg-gradient-fern-turquoise {
+  background: linear-gradient(135deg,
+    var(--gleif-fern) 0%,
+    var(--gleif-turquoise) 100%);
+}
+.bg-gradient-spring-turquoise {
+  background: linear-gradient(135deg,
+    var(--gleif-spring) 0%,
+    var(--gleif-turquoise) 100%);
+}
+.bg-gradient-cyprus-turquoise {
+  background: linear-gradient(180deg,
+    var(--gleif-cyprus) 0%,
+    var(--gleif-turquoise) 100%);
+}

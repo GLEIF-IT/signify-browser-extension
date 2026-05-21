@@ -39,7 +39,7 @@ export function Signin(props: ISignin): JSX.Element {
   return (
     <Grid>
       <Flex flexDirection="row" justifyContent="space-between" padding={2}>
-        <Text fontWeight="bold" fontSize={3} $capitalize $color="bodyColor">
+        <Text fontWeight="700" fontSize={3} $capitalize $color="heading">
           {props.showConfig
             ? formatMessage({ id: "account.settings" })
             : props.title}

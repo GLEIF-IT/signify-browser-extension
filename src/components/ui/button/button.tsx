@@ -19,22 +19,39 @@ type TNewButtonCustomProps = {
 
 const StyledButton = styled.button`
   border: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   background-color: ${(props) =>
-    props.disabled ? "grey" : props.theme?.colors?.primary};
+    props.disabled
+      ? props.theme?.colors?.muted ?? "#9BAEC2"
+      : props.theme?.colors?.accent ?? props.theme?.colors?.primary};
   text-align: center;
-  font-weight: 500;
-  border-radius: 9999px;
-  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  color: ${(props) =>
+    props.disabled
+      ? props.theme?.colors?.white
+      : props.theme?.colors?.onPrimary ?? props.theme?.colors?.white};
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
   font-size: 14px;
   line-height: 20px;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding: 10px 18px;
+  min-height: 40px;
+  transition: background-color 0.15s ease, transform 0.1s ease,
+    box-shadow 0.15s ease;
+  box-shadow: ${(props) =>
+    props.disabled
+      ? "none"
+      : "0 1px 2px rgba(0, 51, 54, 0.2), 0 2px 8px rgba(0, 51, 54, 0.15)"};
+  &:hover:not(:disabled) {
+    filter: brightness(0.94);
+  }
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
 `;
 
 const CustomButton = styled.button<ButtonStyleProps & TNewButtonCustomProps>`

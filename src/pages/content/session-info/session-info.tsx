@@ -7,14 +7,16 @@ import { ThemeProvider, styled } from "styled-components";
 import { useIntl } from "react-intl";
 import { Text, Box, Flex, IconButton, Subtext } from "@components/ui";
 import { IVendorData, ISignin } from "@config/types";
+import { mergeVendorTheme } from "@config/merge-vendor-theme";
 
 const StyledMain = styled(Box)`
   border: ${(props) =>
     `1px solid ${
-      props.theme?.colors?.bodyBorder ?? props.theme?.colors?.bodyBg
+      props.theme?.colors?.border ?? props.theme?.colors?.bodyBorder
     }`};
-  background: ${(props) => props.theme?.colors?.bodyBg};
-  color: ${(props) => props.theme?.colors?.bodyColor};
+  background: ${(props) =>
+    props.theme?.colors?.surface ?? props.theme?.colors?.bodyBg};
+  color: ${(props) => props.theme?.colors?.black};
   opacity: 0.5;
   display: flex;
   flex-direction: row;
@@ -34,10 +36,10 @@ const StyledMain = styled(Box)`
 const StyledTimer = styled(Box)`
   border: ${(props) =>
     `1px solid ${
-      props.theme?.colors?.bodyBorder ?? props.theme?.colors?.bodyBg
+      props.theme?.colors?.border ?? props.theme?.colors?.bodyBorder
     }`};
-  background: ${(props) => props.theme?.colors?.bodyBg};
-  color: ${(props) => props.theme?.colors?.bodyColor};
+  background: ${(props) => props.theme?.colors?.cardBg};
+  color: ${(props) => props.theme?.colors?.primary};
   opacity: 1;
   display: flex;
   flex-direction: row;
@@ -171,19 +173,24 @@ export function SessionInfo({
       }
     };
   }, []);
+  const resolvedVendor = mergeVendorTheme(vendorData);
   const logo =
-    vendorData?.logo ??
-    browser.runtime.getURL("128_keri_logo.png");
+    resolvedVendor.logo ??
+    browser.runtime.getURL("vlei-wallet-extension-logo.svg");
 
   return (
-    <ThemeProvider theme={vendorData?.theme}>
+    <ThemeProvider theme={resolvedVendor.theme}>
       <Toaster
         position="bottom-right"
         toastOptions={{
+          duration: 4000,
           style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
+            borderRadius: "12px",
+            background: "#003336",
+            color: "#FFFFFF",
+            fontFamily: '"Facundo", "Calibri", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
+            fontSize: "14px",
+            boxShadow: "0 8px 24px rgba(0, 51, 54, 0.25)",
           },
         }}
       />
@@ -206,10 +213,10 @@ export function SessionInfo({
           padding={1}
         >
           <Flex flexDirection="column" $flexGap={2} alignItems="center">
-            <StyledImg src={logo} height="32px" alt="logo" />
+            <StyledImg src={logo} height="32px" alt="" />
           </Flex>
           <Flex id="details" flexDirection="row" fontSize={0} $flexGap={1}>
-            <Text $color="">{`${(
+            <Text $color="heading" fontWeight="600">{`${(
               data?.credential?.raw?.schema?.title ??
               data?.identifier?.prefix ??
               ""

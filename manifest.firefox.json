@@ -1,20 +1,22 @@
 {
     "manifest_version": 3,
-    "name": "Signify Browser Extension",
-    "version": "0.0.1",
     "background": {
       "scripts": ["src/pages/background/index.ts"]
     },
     "action": {
       "default_popup": "src/pages/popup/index.html",
       "default_icon": {
-        "32": "32_keri_logo.png",
-        "128": "128_keri_logo.png"
+        "16": "icon-16.png",
+        "32": "icon-32.png",
+        "48": "icon-48.png",
+        "128": "icon-128.png"
       }
     },
     "icons": {
-      "32": "32_keri_logo.png",
-      "128": "128_keri_logo.png"
+      "16": "icon-16.png",
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
     },
     "permissions": ["activeTab", "storage", "alarms"],
     "content_scripts": [
@@ -26,7 +28,7 @@
     ],
     "web_accessible_resources": [
       {
-        "resources": ["128_keri_logo.png"],
+        "resources": ["vlei-wallet-extension-logo.svg", "icon-128.png"],
         "matches": ["<all_urls>"]
       }
     ],

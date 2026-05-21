@@ -15,6 +15,7 @@ import {
   Button,
 } from "@components/ui";
 import { IVendorData, ISignin } from "@config/types";
+import { mergeVendorTheme } from "@config/merge-vendor-theme";
 import { CS_EVENTS } from "@config/event-types";
 import { sendMessage } from "@src/shared/browser/runtime-utils";
 import { getHostnameFromUrl } from "@shared/utils";
@@ -28,30 +29,37 @@ import { postMessage } from "../utils";
 const StyledMain = styled(Box)`
   border: ${(props) =>
     `1px solid ${
-      props.theme?.colors?.bodyBorder ?? props.theme?.colors?.bodyBg
+      props.theme?.colors?.border ?? props.theme?.colors?.bodyBorder
     }`};
-  background: ${(props) => props.theme?.colors?.bodyBg};
-  color: ${(props) => props.theme?.colors?.bodyColor};
+  background: ${(props) =>
+    props.theme?.colors?.surface ?? props.theme?.colors?.bodyBg};
+  color: ${(props) => props.theme?.colors?.black};
+  box-shadow: 0 8px 32px rgba(0, 51, 54, 0.12), 0 2px 8px rgba(0, 51, 54, 0.08);
 `;
 
 const StyledClose = styled(IconButton)`
   position: absolute;
   top: 24px;
   left: 0px;
-  font-size: 12px;
-  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 8px 10px;
   text-align: center;
-  border-radius: 50%;
-  background: ${(props) => props.theme?.colors?.bodyBg};
-  color: ${(props) => props.theme?.colors?.bodyColor};
-  &:hover {
-    background-color: #f55877;
-    color: white;
-  }
+  border-radius: 10px;
+  background: ${(props) => props.theme?.colors?.cardBg};
+  color: ${(props) => props.theme?.colors?.heading};
   border: ${(props) =>
     `1px solid ${
-      props.theme?.colors?.bodyBorder ?? props.theme?.colors?.bodyBg
+      props.theme?.colors?.border ?? props.theme?.colors?.bodyBorder
     }`};
+  transition: background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+  &:hover {
+    background-color: ${(props) => props.theme?.colors?.error};
+    color: ${(props) => props.theme?.colors?.onPrimary ?? "#fff"};
+    border-color: ${(props) => props.theme?.colors?.error};
+  }
 `;
 
 const StyledImgSpan = styled.span`
@@ -103,9 +111,10 @@ export function Dialog({
   const [maxReq, setMaxReq] = useState(0);
   const [selectedSignin, setSelectedSignin] = useState<ISignin>();
 
+  const resolvedVendor = mergeVendorTheme(vendorData);
   const logo =
-    vendorData?.logo ??
-    browser.runtime.getURL("128_keri_logo.png");
+    resolvedVendor.logo ??
+    browser.runtime.getURL("vlei-wallet-extension-logo.svg");
   const [showPopupPrompt, setShowPopupPrompt] = useState(false);
   const showRequestAuthPrompt =
     !signins?.length ||
@@ -173,14 +182,18 @@ export function Dialog({
   };
 
   return (
-    <ThemeProvider theme={vendorData?.theme}>
+    <ThemeProvider theme={resolvedVendor.theme}>
       <Toaster
         position="bottom-right"
         toastOptions={{
+          duration: 4000,
           style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
+            borderRadius: "12px",
+            background: "#003336",
+            color: "#FFFFFF",
+            fontFamily: '"Facundo", "Calibri", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
+            fontSize: "14px",
+            boxShadow: "0 8px 24px rgba(0, 51, 54, 0.25)",
           },
         }}
       />
@@ -206,22 +219,29 @@ export function Dialog({
             }
           />
         ) : null}
-        <StyledClose type="button" onClick={onClickRemove}>
-          x
+        <StyledClose type="button" onClick={onClickRemove} aria-label="Close">
+          ×
         </StyledClose>
-        <StyledMain borderRadius="4px" textAlign="center" padding={3}>
+        <StyledMain borderRadius="12px" textAlign="center" padding={3}>
           <Flex flexDirection="row" $flexGap={2} alignItems="center">
-            <StyledImg src={logo} height="32px" alt="logo" />
-            <Text data-testid="dialog-title" fontWeight="bold" fontSize={3} $color="bodyColor">
-              {formatMessage({ id: "signin.with" })} {vendorData?.title}
+            <StyledImg src={logo} height="32px" alt="" />
+            <Text
+              data-testid="dialog-title"
+              fontWeight="700"
+              fontSize={3}
+              $color="heading"
+            >
+              {formatMessage({ id: "signin.with" })} {resolvedVendor.title}
             </Text>
           </Flex>
           {showRequestAuthPrompt ? (
             <Box marginTop={2} maxWidth="280px">
               <StyledRequestor justifyContent="center">
-                <Text $color="">{getHostnameFromUrl(tabUrl)}</Text>{" "}
+                <Text $color="primary" fontWeight="600">
+                  {getHostnameFromUrl(tabUrl)}
+                </Text>{" "}
               </StyledRequestor>
-              <Text fontSize={1} fontWeight="bold" $color="bodyColor">
+              <Text fontSize={1} fontWeight="700" $color="heading">
                 {formatMessage({ id: "signin.requestAuth" })}{" "}
                 {formatMessage({ id: getTextKeyByEventType() })}
               </Text>
@@ -262,7 +282,7 @@ export function Dialog({
               {signins?.length ? (
                 <Box marginTop={2}>
                   <StyledRequestor padding={1}>
-                    <Subtext fontSize={0} fontWeight="bold" $color="bodyColor">
+                    <Subtext fontSize={0} fontWeight="600" $color="text">
                       {getHostnameFromUrl(tabUrl) +
                         (sessionOneTime
                           ? " is requesting a credential for one time request."

@@ -19,7 +19,10 @@ type TText = TypographyProps & ITypography & MaxWidthProps;
 export const Text = styled.p<TText>`
   margin: 0;
   ${typography}
-  color: ${({ $color, theme }) => theme?.colors?.[$color]};
+  color: ${({ $color, theme }) =>
+    $color === undefined || $color === ""
+      ? "inherit"
+      : theme?.colors?.[$color as keyof typeof theme.colors] ?? "inherit"};
   ${({ $capitalize }) =>
     $capitalize &&
     css`
@@ -41,7 +44,10 @@ export const Subtext = styled.span<TText>`
   ${typography}
   ${maxWidth}
   margin: 0;
-  color: ${({ $color, theme }) => theme?.colors?.[$color]};
+  color: ${({ $color, theme }) =>
+    $color === undefined || $color === ""
+      ? "inherit"
+      : theme?.colors?.[$color as keyof typeof theme.colors] ?? "inherit"};
   ${({ $breakWord }) =>
     $breakWord &&
     css`
