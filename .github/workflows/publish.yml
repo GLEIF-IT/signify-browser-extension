@@ -1,0 +1,61 @@
+name: Publish Internal (GitHub Pages)
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Build, sign, and publish CRX
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22" # crx3 requires Node 22+
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and sign CRX
+        env:
+          # PEM contents of the signing key. Must match the public key baked into
+          # manifest.chrome.json's "key" field and the appid in the policy.
+          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
+          # Where the CRX will be served from — must match this repo's Pages URL.
+          CRX_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/vlei-wallet.crx
+        run: npm run build:crx
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p site
+          cp dist/vlei-wallet.crx dist/update_manifest.xml site/
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

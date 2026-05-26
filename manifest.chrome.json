@@ -1,64 +1,25 @@
 {
-<<<<<<< Updated upstream
-    "manifest_version": 3,
-    "background": {
-      "service_worker": "src/pages/background/index.ts"
-    },
-    "action": {
-      "default_popup": "src/pages/popup/index.html",
-      "default_icon": {
-        "16": "icon-16.png",
-        "32": "icon-32.png",
-        "48": "icon-48.png",
-        "128": "icon-128.png"
-      }
-    },
-    "icons": {
-      "16": "icon-16.png",
-      "32": "icon-32.png",
-      "48": "icon-48.png",
-      "128": "icon-128.png"
-    },
-    "permissions": ["activeTab", "storage", "alarms"],
-    "content_scripts": [
-      {
-        "matches": ["file://*/*", "http://localhost/*", "https://*/*"],
-        "run_at": "document_end",
-        "js": ["src/pages/content/index.tsx"]
-      }
-    ],
-    "web_accessible_resources": [
-      {
-        "resources": ["vlei-wallet-extension-logo.svg", "icon-128.png"],
-        "matches": ["<all_urls>"]
-      }
-    ],
-    "content_security_policy": {
-      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
-=======
   "manifest_version": 3,
-  "name": "Signify Browser Extension",
-  "version": "0.1.0",
-  "author": "Web of Trust",
-  "homepage_url": "https://github.com/weboftrust/signify-browser-extension",
+  "name": "vLEI Wallet",
+  "author": "GLEIF",
+  "homepage_url": "https://github.com/GLEIF-IT/signify-browser-extension",
   "background": {
     "service_worker": "src/pages/background/index.ts"
   },
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
-      "16": "16_keri_logo.png",
-      "32": "32_keri_logo.png",
-      "48": "48_keri_logo.png",
-      "128": "128_keri_logo.png"
->>>>>>> Stashed changes
+      "16": "icon-16.png",
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
     }
   },
   "icons": {
-    "16": "16_keri_logo.png",
-    "32": "32_keri_logo.png",
-    "48": "48_keri_logo.png",
-    "128": "128_keri_logo.png"
+    "16": "icon-16.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
   },
   "permissions": ["activeTab", "storage", "alarms"],
   "content_scripts": [
@@ -70,7 +31,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["128_keri_logo.png"],
+      "resources": ["vlei-wallet-extension-logo.svg", "icon-128.png"],
       "matches": ["<all_urls>"]
     }
   ],

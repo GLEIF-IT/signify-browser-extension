@@ -1,0 +1,21 @@
+stages:
+  - publish
+
+pages:
+  stage: publish
+  image: node:22 # crx3 requires Node 22+
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v/
+    - if: $CI_PIPELINE_SOURCE == "web"
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - npm ci
+    - export CRX_KEY_PATH="$CRX_KEY_FILE"
+    - export CRX_URL="${CI_PAGES_URL}/vlei-wallet.crx"
+    - npm run build:crx
+    - mkdir -p public
+    - cp dist/vlei-wallet.crx dist/update_manifest.xml public/
+  artifacts:
+    paths:
+      - public
