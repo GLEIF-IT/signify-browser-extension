@@ -2,17 +2,17 @@
 #
 # security: GLEIF shared security scan templates (secret detection, SAST,
 #           dependency scanning, issue creation).
-# build:    unsigned Chrome/Firefox builds as downloadable artifacts.
-# publish:  internal (non-CWS) distribution via GitLab Pages. Mirrors
-#           .github/workflows/publish.yml: on a v* tag (or a manual web run),
-#           build and sign the CRX, then publish vlei-wallet.crx +
-#           update_manifest.xml to Pages. The MDM policy's update_url points
-#           at the published update_manifest.xml.
+# build:    unsigned Chrome build as a downloadable artifact.
+# publish:  internal (non-CWS) distribution via GitLab Pages. On a v* tag
+#           (or a manual web run), build and sign the CRX, then publish
+#           vlei-wallet.crx + update_manifest.xml to Pages. The MDM policy's
+#           update_url points at the published update_manifest.xml.
 #
-# Publishing requires a File-type CI/CD variable named CRX_KEY_FILE
-# (Settings → CI/CD → Variables) containing the PEM signing key. Mark it
-# Protected and protect v* tags (Settings → Repository → Protected tags) so
-# tag pipelines can read it.
+# Publishing requires a CI/CD variable named CRX_KEY_B64 (Settings → CI/CD →
+# Variables) containing the base64-encoded PEM signing key, single line:
+#   openssl base64 -A -in key.pem
+# Set it Protected + Masked (and hidden), and protect v* tags
+# (Settings → Repository → Protected tags) so tag pipelines can read it.
 #
 # DEVELOP_BRANCH / PREVIEW_BRANCH are expected as group-level CI variables;
 # rules referencing them simply don't match if unset.
@@ -66,19 +66,6 @@ build:chrome:
     paths:
       - dist/chrome
 
-build:firefox:
-  <<: *build_rules
-  stage: build
-  image: node:22
-  script:
-    - npm ci --no-audit --no-fund --loglevel=error
-    - npm run build:firefox
-  artifacts:
-    name: "vlei-wallet-firefox-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
-    expire_in: 2 weeks
-    paths:
-      - dist/firefox
-
 pages:
   stage: publish
   image: node:22
@@ -92,7 +79,7 @@ pages:
     GIT_DEPTH: "1"
   script:
     - npm ci --no-audit --no-fund --loglevel=error
-    - export CRX_KEY_PATH="$CRX_KEY_FILE"
+    - export CRX_PRIVATE_KEY="$(echo "$CRX_KEY_B64" | base64 -d)"
     - export CRX_URL="${CI_PAGES_URL}/vlei-wallet.crx"
     - npm run build:crx
     - mkdir -p public
