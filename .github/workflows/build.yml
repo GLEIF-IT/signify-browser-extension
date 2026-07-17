@@ -23,7 +23,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci
 
       - name: Build Chrome extension
         run: npm run build
@@ -33,13 +33,13 @@ jobs:
 
       - name: Zip Chrome folder
         run: |
-          cd dist
-          zip -r chrome.zip chrome/
+          cd dist/chrome
+          zip -r ../chrome.zip .
 
       - name: Zip Firefox folder
         run: |
-          cd dist
-          zip -r firefox.zip firefox/
+          cd dist/firefox
+          zip -r ../firefox.zip .
 
       - name: Get version and commit hash
         id: vars

@@ -28,9 +28,17 @@ npm run build             # build for Chrome → dist/chrome/
 npm run build:firefox     # build for Firefox → dist/firefox/
 npm run dev               # watch mode via nodemon
 npm run build:icons       # regenerate PNG icons from vlei-wallet-extension-logo.svg
+npm run build:crx         # build Chrome + pack signed CRX → dist/vlei-wallet.crx (+ update_manifest.xml)
+npm run crx:id            # print the extension ID + manifest key for the signing key
 ```
 
 Load the built extension: Chrome → chrome://extensions → Developer mode → Load unpacked → dist/chrome/
+
+## Distribution
+
+Internal (non-CWS) distribution is self-hosted: a signed CRX + `update_manifest.xml`
+published to GitHub Pages (`publish.yml` on `v*` tags) and force-installed
+via an enterprise policy (FileWave).
 
 ## Path Aliases (vite.config.ts)
 

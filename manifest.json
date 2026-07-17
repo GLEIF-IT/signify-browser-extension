@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
   "name": "vLEI Wallet",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
+  "author": "GLEIF",
+  "homepage_url": "https://gitlab.gleif.org/it-infrastructure/swarm/signify-browser",
   "background": {
     "service_worker": "src/pages/background/index.ts"
   },

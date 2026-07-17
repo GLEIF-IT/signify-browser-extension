@@ -3,8 +3,15 @@
 node_modules
 dist
 
+# CRX signing key — never commit. See docs/INTERNAL_DISTRIBUTION.md
+key.pem
+*.pem
+
 
 # IntelliJ Project Files
 .idea
 .env.local
 coverage/*
+
+# Syncthing
+.stfolder/
