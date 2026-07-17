@@ -1,25 +1,21 @@
 {
   "name": "signify-browser-extension",
-<<<<<<< Updated upstream
   "displayName": "vLEI Wallet",
-  "version": "0.0.1",
-  "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
-=======
-  "displayName": "Polaris",
   "version": "0.1.0",
-  "description": "Authenticate to websites and present ACDC credentials using KERI AIDs from a KERIA agent.",
-  "author": "Web of Trust",
-  "homepage": "https://github.com/weboftrust/signify-browser-extension",
->>>>>>> Stashed changes
+  "description": "Browser extension for vLEI identifiers, credentials, and sign-in",
+  "author": "GLEIF",
+  "homepage": "https://github.com/GLEIF-IT/signify-browser-extension",
   "license": "APACHE 2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/weboftrust/signify-browser-extension.git"
+    "url": "https://github.com/GLEIF-IT/signify-browser-extension.git"
   },
   "scripts": {
     "build:icons": "node scripts/build-extension-icons.mjs",
     "build": "npm run build:icons && vite build",
     "build:firefox": "npm run build:icons && BROWSER=firefox vite build",
+    "build:crx": "npm run build && node scripts/pack-crx.mjs",
+    "crx:id": "node scripts/pack-crx.mjs --id-only",
     "dev": "nodemon"
   },
   "type": "module",
@@ -51,6 +47,7 @@
     "@typescript-eslint/parser": "^5.49.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.13",
+    "crx3": "^2.0.0",
     "esbuild": "^0.24.0",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",

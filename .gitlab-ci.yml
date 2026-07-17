@@ -1,0 +1,89 @@
+# CI for the internal GitLab instance (gitlab.gleif.org).
+#
+# security: GLEIF shared security scan templates (secret detection, SAST,
+#           dependency scanning, issue creation).
+# build:    unsigned Chrome build as a downloadable artifact.
+# publish:  internal (non-CWS) distribution via GitLab Pages. On a v* tag
+#           (or a manual web run), build and sign the CRX, then publish
+#           vlei-wallet.crx + update_manifest.xml to Pages. The MDM policy's
+#           update_url points at the published update_manifest.xml.
+#
+# Publishing requires a CI/CD variable named CRX_KEY_B64 (Settings → CI/CD →
+# Variables) containing the base64-encoded PEM signing key, single line:
+#   openssl base64 -A -in key.pem
+# Set it Protected + Masked (and hidden), and protect v* tags
+# (Settings → Repository → Protected tags) so tag pipelines can read it.
+#
+# DEVELOP_BRANCH / PREVIEW_BRANCH are expected as group-level CI variables;
+# rules referencing them simply don't match if unset.
+
+stages:
+  - security
+  - build
+  - publish
+
+include:
+  - project: "it-infrastructure/swarm/gitlab-ci-security-templates"
+    ref: v1.7
+    file:
+      - "/security/secret_detection.yml"
+      - "/security/sast-semgrep.yml"
+      - "/security/dependency-gemnasium.yml"
+      - "/security/create-gitlab-security-issues.yml"
+
+variables:
+  ALLOWED_GITLAB_URL: "https://gitlab.gleif.org"
+  NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
+  DS_INCLUDE_DEV_DEPENDENCIES: "false"
+  DS_EXCLUDED_PATHS: "example-web/**"
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+
+.build_rules: &build_rules
+  rules:
+    - if: $CI_SERVER_URL != $ALLOWED_GITLAB_URL
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME == $DEVELOP_BRANCH || $CI_COMMIT_REF_NAME == $PREVIEW_BRANCH
+    - when: manual
+      allow_failure: true
+
+build:chrome:
+  <<: *build_rules
+  stage: build
+  image: node:22 # crx3 (publish stage) requires Node 22+; keep build on the same toolchain
+  script:
+    - npm ci --no-audit --no-fund --loglevel=error
+    - npm run build
+  artifacts:
+    name: "vlei-wallet-chrome-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    expire_in: 2 weeks
+    paths:
+      - dist/chrome
+
+pages:
+  stage: publish
+  image: node:22
+  needs: [] # signs its own build; don't block on (possibly manual) build jobs
+  rules:
+    - if: $CI_SERVER_URL != $ALLOWED_GITLAB_URL
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v/
+    - if: $CI_PIPELINE_SOURCE == "web"
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - npm ci --no-audit --no-fund --loglevel=error
+    - export CRX_PRIVATE_KEY="$(echo "$CRX_KEY_B64" | base64 -d)"
+    - export CRX_URL="${CI_PAGES_URL}/vlei-wallet.crx"
+    - npm run build:crx
+    - mkdir -p public
+    - cp dist/vlei-wallet.crx dist/update_manifest.xml public/
+  artifacts:
+    paths:
+      - public
