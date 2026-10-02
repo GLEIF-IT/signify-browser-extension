@@ -2,6 +2,7 @@ const CS = "cs-"; // content-script
 const UI = "ui-"; // pages like popup, new tab etc
 const EXTERNAL = "external-"; // onExternalMessage
 const SW = "sw-"; // service-worker
+const CONFIRM = "confirm-"; // issuance confirmation page
 
 const EVENT_TYPE = {
   action_icon: "action-icon",
@@ -11,6 +12,7 @@ const EVENT_TYPE = {
   fetch_resource: "fetch-resource",
   update_resource: "update-resource",
   vendor_info: "vendor-info",
+  issue_confirm: "issue-confirm",
 };
 
 export const CS_EVENTS = {
@@ -21,10 +23,12 @@ export const CS_EVENTS = {
 
   fetch_resource_auto_signin_signature: `${CS}-${EVENT_TYPE.fetch_resource}-auto-signin-signature`,
   fetch_resource_signed_headers: `${CS}-${EVENT_TYPE.fetch_resource}-signed-headers`,
+  fetch_resource_sign_data: `${CS}-${EVENT_TYPE.fetch_resource}-sign-data`,
   fetch_resource_tab_signin: `${CS}-${EVENT_TYPE.fetch_resource}-tab-signin`,
   fetch_resource_credential: `${CS}-${EVENT_TYPE.fetch_resource}-credential`,
-  
+
   create_resource_data_attestation_credential: `${CS}-${EVENT_TYPE.create_resource}-data-attestation-credential`,
+  create_resource_issue_credentials: `${CS}-${EVENT_TYPE.create_resource}-issue-credentials`,
 
   vendor_info_get_vendor_data: `${CS}-${EVENT_TYPE.vendor_info}-get-vendor-data`,
   vendor_info_provide_config_url: `${CS}-${EVENT_TYPE.vendor_info}-provide-config-url`,
@@ -62,13 +66,19 @@ export const SW_EVENTS = {
   check_popup_open: `${SW}-check-popup-open`,
 } as const;
 
+export const CONFIRM_EVENTS = {
+  issue_get_request: `${CONFIRM}-${EVENT_TYPE.issue_confirm}-get-request`,
+  issue_decision: `${CONFIRM}-${EVENT_TYPE.issue_confirm}-decision`,
+} as const;
+
 type T_CS_EVENTS = (typeof CS_EVENTS)[keyof typeof CS_EVENTS];
 type T_UI_EVENTS = (typeof UI_EVENTS)[keyof typeof UI_EVENTS];
 type T_SW_EVENTS = (typeof SW_EVENTS)[keyof typeof SW_EVENTS];
+type T_CONFIRM_EVENTS = (typeof CONFIRM_EVENTS)[keyof typeof CONFIRM_EVENTS];
 
 
 // this would make sure the type must be a string from these objects
-type T_EventType = T_CS_EVENTS | T_UI_EVENTS | T_SW_EVENTS;
+type T_EventType = T_CS_EVENTS | T_UI_EVENTS | T_SW_EVENTS | T_CONFIRM_EVENTS;
 
 type NoInfer<T> = [T][T extends unknown ? 0 : never];
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>sign-data manual test</title></head>
+<body>
+<pre id="out">Loading polaris-web client...</pre>
+<script>
+  const out = document.getElementById("out");
+  const log = (msg) => { out.textContent += "\n" + msg; };
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window || !event.data) return;
+    const { type, requestId, payload, error } = event.data;
+    if (type === "signify-extension") {
+      log("Extension detected: " + event.data.data.extensionId);
+      return;
+    }
+    if (type === "/signify/reply") {
+      log("Reply for " + requestId + ": " + JSON.stringify({ payload, error }, null, 2));
+    }
+  });
+
+  window.postMessage({ type: "signify-extension-client" }, "/");
+
+  function send(type, payload) {
+    const requestId = crypto.randomUUID();
+    window.postMessage({ type, requestId, payload }, "/");
+  }
+
+  window.runAuthorize = () => { log("Sending /signify/authorize ..."); send("/signify/authorize", { message: "sign-data raw test" }); };
+  window.runSignData = () => { log("Sending /signify/sign-data ..."); send("/signify/sign-data", { items: ["EEOikJx0pQxDsXmqiUo-N8apjtJGFY3Kafegxfy4wZ_Q"] }); };
+</script>
+<button onclick="runAuthorize()">1. Authorize</button>
+<button onclick="runSignData()">2. Sign Data</button>
+</body>
+</html>

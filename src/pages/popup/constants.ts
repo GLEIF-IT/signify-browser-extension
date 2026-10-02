@@ -6,6 +6,8 @@ export const TAB_STATE = {
     CLEAR_SESSION: "/signify/clear-session",
     AUTHORIZE_AUTO_SIGNIN: "/signify/authorize-auto-signin",
     SIGN_REQUEST: "/signify/sign-request",
+    SIGN_DATA: "/signify/sign-data",
+    ISSUE_CREDENTIALS: "/signify/credential/issue",
     CONFIGURE_VENDOR: "/signify/configure-vendor",
     SELECT_AUTO_SIGNIN: "select-auto-signin",
     CREATE_DATA_ATTEST_CRED: "/signify/credential/create/data-attestation",

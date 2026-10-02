@@ -35,6 +35,8 @@ export default defineConfig({
     react(),
     webExtension({
       manifest: generateManifest,
+      // Not referenced by the manifest (opened by the background via windows.create), so list it explicitly.
+      additionalInputs: ["src/pages/issue-confirm/index.html"],
     }),
   ],
   publicDir,

@@ -111,3 +111,36 @@ By design, the following rules are enforced to ensure the security of the extens
 [PROVENANT]: https://provenant.net/
 [PROVENANT_BOUNTY]: https://docs.google.com/document/d/1mq82RDRGfoOMCs8sR8Cuj_hMC5i1_aP7e6DVqp8o13g/edit?usp=sharing
 [SIG_TS]: https://github.com/weboftrust/signify-ts
+
+## Credential issuance — `/signify/credential/issue`
+
+Issues one or more credentials under the tab's authorized identifier, **after the user confirms in an
+extension-owned window** (a hostile page cannot click through it). Generic: the caller supplies schema,
+attributes, edges and registry.
+
+```js
+window.postMessage({
+  type: "/signify/credential/issue",
+  requestId: "r1",
+  payload: {
+    credentials: [{
+      schemaSaid: "<schema SAID>",        // must already be known to the agent's KERIA
+      registryName: "faw-reg",            // required; created (no backers) if the AID lacks it
+      attributes: { /* no d / i; dt optional */ },
+      edges: { /* optional: { label: { n, s, o? } } -- the edge block's d is computed */ },
+      rules: { /* optional */ },
+    }],
+  },
+}, "*");
+// reply (window message "/signify/reply"):
+//   success: payload = { credentials: [{ said, schemaSaid, registryName, issuer, issuedAt }] }  (same order)
+//   failure: error = "<message>", payload = { issued: [ ...credentials anchored before the failure ] }
+```
+
+Credentials are issued strictly one after another (each anchors the next KEL event), so a batch of N
+takes N witnessed anchors. Group (multisig) identifiers are not supported. The extension never resolves
+schema OOBIs: have KERIA resolve them first (e.g. `durls` in its config). Fetch a credential's CESR with
+the existing `/signify/credential/get` message.
+
+Tests: `npm test` (vitest, mocked client). Real-agent check:
+`AAV_SMOKE_PASSCODE=… npx vitest run src/pages/background/services/credential-issuance.smoke.test.ts`.

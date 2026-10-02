@@ -135,6 +135,60 @@ window.addEventListener(
           }
 
           break;
+        case TAB_STATE.SIGN_DATA:
+          const { data: signDataResult, error: signDataError } = await sendMessageWithExtId<{
+            rurl?: string;
+          }>(getExtId(), {
+            type: CS_EVENTS.fetch_resource_sign_data,
+            data: event.data.payload,
+          });
+          requestId = event?.data?.requestId ?? "";
+          rurl = event?.data?.rurl ?? rurl;
+          console.log("signDataResult", signDataResult);
+          if (signDataError) {
+            postMessage({
+              type: "/signify/reply",
+              error: signDataError?.message,
+              requestId,
+              rurl,
+            });
+          } else {
+            postMessage({
+              type: "/signify/reply",
+              payload: signDataResult,
+              requestId,
+              rurl,
+            });
+          }
+
+          break;
+        case TAB_STATE.ISSUE_CREDENTIALS:
+          const { data: issueData, error: issueError } = await sendMessageWithExtId<{
+            rurl?: string;
+          }>(getExtId(), {
+            type: CS_EVENTS.create_resource_issue_credentials,
+            data: event.data.payload,
+          });
+          requestId = event?.data?.requestId ?? "";
+          rurl = event?.data?.rurl ?? rurl;
+          if (issueError) {
+            postMessage({
+              type: "/signify/reply",
+              error: issueError?.message,
+              payload: { issued: issueError?.issued ?? [] },
+              requestId,
+              rurl,
+            });
+          } else {
+            postMessage({
+              type: "/signify/reply",
+              payload: issueData,
+              requestId,
+              rurl,
+            });
+          }
+
+          break;
         case TAB_STATE.GET_SESSION_INFO:
           const sessionInfo = await sendMessageWithExtId(getExtId(), {
             type: CS_EVENTS.authentication_get_session_info,
