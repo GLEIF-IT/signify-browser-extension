@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  background: #f0f0f0;
+  color: #003336;
+}
+.confirm {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px 20px 24px;
+  box-sizing: border-box;
+}
+h1 { font-size: 18px; margin: 4px 0 8px; }
+h2 { font-size: 14px; margin: 0 0 4px; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin: 10px 0 4px; color: #6a7b7f; }
+.issuer { font-size: 13px; line-height: 1.5; }
+code { font-size: 11px; word-break: break-all; }
+.credential {
+  background: #fff;
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+pre {
+  margin: 0;
+  max-height: 160px;
+  overflow: auto;
+  font-size: 11px;
+  background: #f7f7f7;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 1px solid #003336;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.approve { background: #003336; color: #fff; }
+.deny { background: #fff; color: #003336; }

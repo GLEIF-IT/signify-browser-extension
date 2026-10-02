@@ -1,5 +1,5 @@
 import { IHandler } from "@src/config/types";
-import { CS_EVENTS, UI_EVENTS, EXTERNAL_EVENTS } from "@config/event-types";
+import { CS_EVENTS, UI_EVENTS, EXTERNAL_EVENTS, CONFIRM_EVENTS } from "@config/event-types";
 import {
   handleSetActionIcon,
   handleUnsetActionIcon,
@@ -12,6 +12,7 @@ import {
   handleDeleteSignin,
   handleFetchAutoSigninSignature,
   handleFetchSignifyHeaders,
+  handleFetchSignData,
   handleFetchCredentials,
   handleFetchIdentifiers,
   handleFetchSignins,
@@ -20,6 +21,11 @@ import {
   handleCreateAttestationCredential,
   handleFetchCredential
 } from "./resource";
+import {
+  handleGetIssueRequest,
+  handleIssueCredentials,
+  handleIssueDecision,
+} from "./issueCredentials";
 import { handleGetVendorData, handleAttemptSetVendorData } from "./vendorInfo";
 import {
   handleBootConnectAgent,
@@ -78,10 +84,15 @@ export function initCSHandler() {
     CS_EVENTS.fetch_resource_signed_headers,
     handleFetchSignifyHeaders
   );
+  handler.set(
+    CS_EVENTS.fetch_resource_sign_data,
+    handleFetchSignData
+  );
   handler.set(CS_EVENTS.fetch_resource_tab_signin, handleFetchTabSignin);
   handler.set(CS_EVENTS.fetch_resource_credential, handleFetchCredential);
 
   handler.set(CS_EVENTS.create_resource_data_attestation_credential, handleCreateAttestationCredential);
+  handler.set(CS_EVENTS.create_resource_issue_credentials, handleIssueCredentials);
 
   handler.set(CS_EVENTS.vendor_info_get_vendor_data, handleGetVendorData);
   handler.set(
@@ -106,6 +117,13 @@ export function initCSHandler() {
     handleClearSession
   );
 
+  return handler;
+}
+
+export function initIssueConfirmHandler() {
+  const handler = new Map<string, (res: IHandler) => void>();
+  handler.set(CONFIRM_EVENTS.issue_get_request, handleGetIssueRequest);
+  handler.set(CONFIRM_EVENTS.issue_decision, handleIssueDecision);
   return handler;
 }
 

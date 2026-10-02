@@ -10,6 +10,11 @@ interface IFetchSignifyHeadersData {
   headers: HeadersInit;
 }
 
+interface IFetchSignDataData {
+  message?: string;
+  items: string[];
+}
+
 interface IFetchCredentialData {
   id: string;
   includeCESR?: boolean;
@@ -101,6 +106,32 @@ export async function handleFetchSignifyHeaders({
     });
     sendResponse({
       data: isig,
+    });
+  } catch (error: any) {
+    sendResponse({
+      error: { code: 503, message: error?.message },
+    });
+  }
+}
+
+export async function handleFetchSignData({
+  sendResponse,
+  url,
+  tabId,
+  data,
+}: IHandler<IFetchSignDataData>) {
+  if (!data) {
+    sendResponse({ error: { code: 400, message: "missing data" } });
+    return;
+  }
+  try {
+    const result = await signifyService.signData({
+      origin: getDomainFromUrl(url!),
+      items: data.items,
+      tabId: tabId!,
+    });
+    sendResponse({
+      data: result,
     });
   } catch (error: any) {
     sendResponse({

@@ -234,6 +234,51 @@ const getSignedHeaders = async ({
 };
 
 /**
+ * @param origin - origin url from where request is being made -- required
+ * @param items - array of UTF-8 strings to sign -- required
+ * @param tabId - tabId of the tab from where the request is being made -- required
+ * @returns Promise<{aid: string, items: {data: string, signature: string}[]}>
+ */
+const signData = async ({
+  origin,
+  items,
+  tabId,
+}: {
+  origin: string;
+  items: string[];
+  tabId: number;
+}): Promise<any> => {
+  // in case the client is not connected, try to connect
+  const connected = await isConnected();
+  // connected is false, it means the client session timed out or disconnected by user
+  if (!connected) {
+    validateClient();
+  }
+
+  const session = await sessionService.get({ tabId, origin });
+  await sessionService.incrementRequestCount(tabId);
+  if (!session) {
+    throw new Error("Session not found");
+  }
+
+  const hab = await getClient()?.identifiers().get(session.aidName);
+  const keeper = getClient()!.manager!.get(hab);
+  const signer = keeper.signers[0];
+
+  const signedItems = items.map((item: string) => ({
+    data: item,
+    signature: signer.sign(new TextEncoder().encode(item), 0).qb64,
+  }));
+
+  resetTimeoutAlarm();
+
+  return {
+    aid: hab["prefix"],
+    items: signedItems,
+  };
+};
+
+/**
  * Create a data attestation credential, it is an untargeted ACDC credential i.e. there is no issuee.
  *
  * @param origin - origin url from where request is being made -- required
@@ -367,6 +412,7 @@ export const signifyOperationsService = {
   getCredential,
   createAID,
   getSignedHeaders,
+  signData,
   authorizeSelectedSignin,
   getSessionInfo,
   removeSessionInfo,

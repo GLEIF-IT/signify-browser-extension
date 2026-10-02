@@ -21,3 +21,16 @@ export const getCurrentUrl = async () => {
     return new URL("http://localhost:3000");
   }
 };
+
+const isExtensionUrl = (url?: string) =>
+  !!url && (url.startsWith("moz-extension://") || url.startsWith("chrome-extension://"));
+
+/** True only for the extension's own issuance-confirmation page (its URL carries a ?id= query). */
+export const senderIsIssueConfirm = (sender: browser.Runtime.MessageSender) => {
+  if (!isExtensionUrl(sender.url) || sender.id !== getExtId()) return false;
+  try {
+    return new URL(sender.url!).pathname.endsWith("/src/pages/issue-confirm/index.html");
+  } catch {
+    return false;
+  }
+};

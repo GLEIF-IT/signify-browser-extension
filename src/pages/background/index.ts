@@ -2,14 +2,15 @@ import browser from "webextension-polyfill";
 import { configService } from "@pages/background/services/config";
 import { sessionStorageService } from "@pages/background/services/browser-storage";
 import { IMessage } from "@config/types";
-import { senderIsPopup } from "@pages/background/utils";
+import { senderIsIssueConfirm, senderIsPopup } from "@pages/background/utils";
 import { setActionIcon } from "@shared/browser/action-utils";
-import { initCSHandler, initUIHandler } from "@pages/background/handlers";
+import { initCSHandler, initUIHandler, initIssueConfirmHandler } from "@pages/background/handlers";
 
 console.log("Background script loaded");
 
 const csHandler = initCSHandler();
 const uiHandler = initUIHandler();
+const issueConfirmHandler = initIssueConfirmHandler();
 const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
 function saveTimestamp() {
@@ -39,7 +40,20 @@ browser.runtime.onMessage.addListener(function (
   sendResponse
 ) {
   (async () => {
-    if (sender.tab && sender.tab.active && !senderIsPopup(sender)) {
+    // The issuance-confirmation window is an extension page in an active tab that is not the popup, so it
+    // must be recognised first: otherwise its messages would be handled as content-script messages.
+    if (senderIsIssueConfirm(sender)) {
+      console.log("Message received from issue confirmation page: ", message.type);
+      const processor = issueConfirmHandler.get(message.type);
+      if (processor) {
+        processor({
+          sendResponse,
+          tabId: sender?.tab?.id,
+          url: sender?.url,
+          data: message?.data,
+        });
+      }
+    } else if (sender.tab && sender.tab.active && !senderIsPopup(sender)) {
       console.log("Message received from content script at ", sender?.tab?.url);
       console.log("Message Type", message.type);
       const processor = csHandler.get(message.type);
