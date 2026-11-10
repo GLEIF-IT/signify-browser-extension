@@ -116,27 +116,6 @@ export async function handleGetAuthData({
   }
 }
 
-export async function handleGetSessionInfo({
-  sendResponse,
-  tabId,
-  url,
-}: IHandler) {
-  try {
-    const resp = await signifyService.getSessionInfo({
-      tabId: tabId!,
-      origin: getDomainFromUrl(url!),
-    });
-
-    sendResponse({
-      data: resp,
-    });
-  } catch (error: any) {
-    sendResponse({
-      error: { code: 503, message: error?.message },
-    });
-  }
-}
-
 export async function handleClearSession({
   sendResponse,
   tabId,

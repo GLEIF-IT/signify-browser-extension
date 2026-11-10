@@ -14,6 +14,7 @@ import {
   Radio,
   Button,
 } from "@components/ui";
+import type { AuthorizeResult } from "vlei-wallet-protocol/extension";
 import { IVendorData, ISignin } from "@config/types";
 import { mergeVendorTheme } from "@config/merge-vendor-theme";
 import { CS_EVENTS } from "@config/event-types";
@@ -24,7 +25,6 @@ import { setTabState } from "@pages/content";
 import { resetTabState } from "@pages/content";
 import { PopupPrompt } from "./popupPrompt";
 import { SigninItem } from "./signin";
-import { postMessage } from "../utils";
 
 const StyledMain = styled(Box)`
   border: ${(props) =>
@@ -78,9 +78,11 @@ interface IDialog {
   signins: ISignin[];
   vendorData: IVendorData;
   autoSigninObjExists?: boolean;
-  requestId: string;
-  rurl: string;
   sessionOneTime: boolean;
+  /** The user signed in: becomes the reply to the page's authorize request. */
+  onResolve: (result: AuthorizeResult) => void;
+  /** The user closed the dialog: the page's request is rejected as cancelled. */
+  onCancel: () => void;
 }
 
 const StyledRequestor = styled(Flex)`
@@ -102,9 +104,9 @@ export function Dialog({
   autoSigninObjExists,
   eventType = TAB_STATE.NONE,
   handleRemove,
-  requestId,
-  rurl,
   sessionOneTime,
+  onResolve,
+  onCancel,
 }: IDialog): JSX.Element {
   const { formatMessage } = useIntl();
   const [sessionTime, setSessionTime] = useState(5);
@@ -133,12 +135,7 @@ export function Dialog({
   }, []);
 
   const onClickRemove = () => {
-    postMessage({
-      type: "/signify/reply",
-      error: "request has been cancelled",
-      requestId,
-      rurl,
-    });
+    onCancel();
     handleRemove();
   };
 
@@ -160,13 +157,11 @@ export function Dialog({
       return;
     }
     const { data, error } = await sendMessage<{
-      rurl: string;
       signin: ISignin;
       config: { sessionOneTime: boolean };
     }>({
       type: CS_EVENTS.authentication_get_auth_data,
       data: {
-        rurl,
         signin: selectedSignin,
         config: { sessionOneTime },
       },
@@ -176,8 +171,7 @@ export function Dialog({
       toast.error(error.message);
     } else {
       resetTabState();
-      // Communicate headers to web page
-      postMessage({ type: "/signify/reply", requestId, payload: data });
+      onResolve(data);
     }
   };
 
@@ -219,7 +213,12 @@ export function Dialog({
             }
           />
         ) : null}
-        <StyledClose type="button" onClick={onClickRemove} aria-label="Close">
+        <StyledClose
+          type="button"
+          onClick={onClickRemove}
+          aria-label="Close"
+          data-testid="dialog-close"
+        >
           ×
         </StyledClose>
         <StyledMain borderRadius="12px" textAlign="center" padding={3}>
