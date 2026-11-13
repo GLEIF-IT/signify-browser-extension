@@ -33,7 +33,7 @@
     "signify-ts": "0.3.0-rc1",
     "styled-components": "^6.1.8",
     "styled-system": "^5.1.5",
-    "vlei-wallet-protocol": "file:../vlei-wallet-protocol",
+    "vlei-wallet-protocol": "github:vladislavpopovwork/vlei-wallet-protocol#v0.1.0",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
