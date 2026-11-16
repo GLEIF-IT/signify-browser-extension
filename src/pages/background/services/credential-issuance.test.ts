@@ -114,7 +114,7 @@ describe("issueBatch", () => {
   it("saidifies edges and rules, and omits them when absent or empty", async () => {
     const { client, issueArgs } = fakeClient({ registries: [{ name: "dossier-reg", regk: "EDOSS" }] });
     const edges = {
-      signerAuthority: { n: "EOOR", s: "SOOR", o: "I2I" },
+      signerAuthority: { n: "ESIGNERECR", s: "SECR", o: "I2I" },
       report: { n: "EFAW1", s: "SFAW" },
     };
 
@@ -191,7 +191,7 @@ describe("issueBatch", () => {
 describe("summarizeBatch", () => {
   it("describes the batch for the confirmation window without issuing anything", async () => {
     const { client, issueArgs, events } = fakeClient();
-    const edges = { signerAuthority: { n: "EOOR", s: "SOOR", o: "I2I" } };
+    const edges = { signerAuthority: { n: "ESIGNERECR", s: "SECR", o: "I2I" } };
 
     const summary = await summarizeBatch(client, "signer", [
       faw({ schemaSaid: "SDOSSIER", registryName: "dossier-reg", edges }),

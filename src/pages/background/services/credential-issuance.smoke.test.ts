@@ -12,16 +12,16 @@ const AGENT_URL = process.env.AAV_SMOKE_AGENT_URL ?? "http://localhost:3901";
 const SCHEMA_HOST = process.env.AAV_SMOKE_SCHEMA_HOST ?? "http://vlei-server:7723";
 
 const FAW_SCHEMA = "EEOikJx0pQxDsXmqiUo-N8apjtJGFY3Kafegxfy4wZ_Q";
-const DOSSIER_SCHEMA = "EEujyBQM8WEiCQiI9jlroFRBSGJ718CYJUpF9C1KWs1F";
-const OOR_SCHEMA = "EBNaNu-M9P5cgrnfl2Fvymy4E_jvxxyjb70PRtiANlJy";
+const DOSSIER_SCHEMA = "EEeTwn7-DU7rXa1zp17Sw5af0fbM9cbewqb2-XeDVbnj";
 const ECR_SCHEMA = "EEy9PkikFcANV1l7EHukCeXqrzT1hNZjGlUk7wuMO5jw";
+const SIGNER_ROLE = "AAV Report Signer";
 
 const digestOf = (text: string) =>
   new Diger({ code: MtrDex.Blake3_256 }, new TextEncoder().encode(text)).qb64;
 
 describe.skipIf(!PASSCODE)("credential issuance against a real KERIA", () => {
   it(
-    "issues FAWs in faw-reg, then a Dossier in dossier-reg with an I2I edge to the OOR",
+    "issues FAWs in faw-reg, then a Dossier in dossier-reg with an I2I edge to the signer's ECR",
     async () => {
       await ready();
       const client = new SignifyClient(AGENT_URL, PASSCODE!, Tier.low);
@@ -34,13 +34,14 @@ describe.skipIf(!PASSCODE)("credential issuance against a real KERIA", () => {
         expect((await client.schemas().get(said)).$id).toBe(said);
       }
 
-      // The signer's identifier is the OOR's issuee (that's what makes the Dossier edge I2I-valid).
-      const oors = await client.credentials().list({ filter: { "-s": OOR_SCHEMA }, limit: 50 });
-      expect(oors.length, "this agent must hold an OOR credential").toBeGreaterThan(0);
-      const oor = oors[0].sad;
+      // The signer's identifier is the ECR's issuee (that's what makes the Dossier edge I2I-valid).
+      const ecrs = await client.credentials().list({ filter: { "-s": ECR_SCHEMA }, limit: 50 });
+      const signerEcr = ecrs.find((c: any) => c.sad.a.engagementContextRole === SIGNER_ROLE);
+      expect(signerEcr, `this agent must hold an ECR with the role ${SIGNER_ROLE}`).toBeDefined();
+      const ecr = signerEcr.sad;
       const identifiers = await client.identifiers().list();
-      const signer = identifiers.aids.find((aid: any) => aid.prefix === oor.a.i);
-      expect(signer, "an identifier of this agent must be the OOR's issuee").toBeDefined();
+      const signer = identifiers.aids.find((aid: any) => aid.prefix === ecr.a.i);
+      expect(signer, "an identifier of this agent must be the ECR's issuee").toBeDefined();
 
       const faws = await issueBatch(
         client,
@@ -63,11 +64,13 @@ describe.skipIf(!PASSCODE)("credential issuance against a real KERIA", () => {
           registryName: "dossier-reg",
           attributes: {
             governance: "AAV-v1",
-            assembler: { name: oor.a.personLegalName },
-            submitter: { ecr: digestOf("smoke ecr stand-in"), schema: ECR_SCHEMA },
+            metadata: {
+              assembler: { name: ecr.a.personLegalName },
+              submitter: { ecr: digestOf("smoke ecr stand-in"), schema: ECR_SCHEMA },
+            },
           },
           edges: {
-            signerAuthority: { n: oor.d, s: OOR_SCHEMA, o: "I2I" },
+            signerAuthority: { n: ecr.d, s: ECR_SCHEMA, o: "I2I" },
             report0: { n: faws[0].said, s: FAW_SCHEMA },
             report1: { n: faws[1].said, s: FAW_SCHEMA },
           },
