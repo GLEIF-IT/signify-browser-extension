@@ -69,10 +69,11 @@ Note down the boot and agent URLs!
 
 ## Web app ↔ extension protocol
 
-Both sides use the `vlei-wallet-protocol` library (dependency `file:../vlei-wallet-protocol`: clone it next to this
-repository and run `npm install && npm run build` there before `npm install` here). The protocol, its messages and
-errors are specified in that repository's `PROTOCOL_DEMO.md`; its `examples/web-app` is a page to try the extension
-with, and its `npm run test:e2e` runs end-to-end tests against this extension's `dist/chrome`.
+Both sides use the [`vlei-wallet-protocol`][VLEI_WALLET_PROTOCOL] library, installed from its git tag
+(`github:GLEIF-IT/vlei-wallet-protocol#v0.1.1`; `npm install` builds it). The protocol, its messages and errors are
+specified in that repository's `PROTOCOL_DEMO.md`; its `docs/examples/web-app` is a page to try the extension with,
+and its `npm run test:e2e` runs end-to-end tests against this extension's `dist/chrome`
+(`VLEI_EXTENSION_PATH=<path to dist/chrome>`).
 
 - Content script (`src/pages/content/index.tsx`): `createContentBridge` answers the handshake, shows the sign-in
   dialog for `/signify/authorize*` and relays every other request to the background.
@@ -125,6 +126,7 @@ By design, the following rules are enforced to ensure the security of the extens
 [PROVENANT]: https://provenant.net/
 [PROVENANT_BOUNTY]: https://docs.google.com/document/d/1mq82RDRGfoOMCs8sR8Cuj_hMC5i1_aP7e6DVqp8o13g/edit?usp=sharing
 [SIG_TS]: https://github.com/weboftrust/signify-ts
+[VLEI_WALLET_PROTOCOL]: https://github.com/GLEIF-IT/vlei-wallet-protocol
 
 ## Credential issuance — `/signify/credential/issue`
 
