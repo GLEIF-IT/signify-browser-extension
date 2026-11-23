@@ -11,22 +11,14 @@ import {
   handleCreateSignin,
   handleDeleteSignin,
   handleFetchAutoSigninSignature,
-  handleFetchSignifyHeaders,
-  handleFetchSignData,
   handleFetchCredentials,
   handleFetchIdentifiers,
   handleFetchSignins,
   handleFetchTabSignin,
   handleUpdateAutoSignin,
-  handleCreateAttestationCredential,
-  handleFetchCredential
 } from "./resource";
-import {
-  handleGetIssueRequest,
-  handleIssueCredentials,
-  handleIssueDecision,
-} from "./issueCredentials";
-import { handleGetVendorData, handleAttemptSetVendorData } from "./vendorInfo";
+import { handleGetIssueRequest, handleIssueDecision } from "./issueCredentials";
+import { handleGetVendorData } from "./vendorInfo";
 import {
   handleBootConnectAgent,
   handleCheckAgentConnection,
@@ -34,7 +26,6 @@ import {
   handleDisconnectAgent,
   handleGeneratePasscode,
   handleGetAuthData,
-  handleGetSessionInfo,
   handleClearSession,
 } from "./authentication";
 
@@ -70,6 +61,7 @@ export function initUIHandler() {
   return handler;
 }
 
+/** Internal content-script events (dialog, overlays). Page protocol requests go through handlers/protocol.ts. */
 export function initCSHandler() {
   const handler = new Map<string, (res: IHandler) => void>();
   handler.set(CS_EVENTS.action_icon_set, handleSetActionIcon);
@@ -80,25 +72,9 @@ export function initCSHandler() {
     CS_EVENTS.fetch_resource_auto_signin_signature,
     handleFetchAutoSigninSignature
   );
-  handler.set(
-    CS_EVENTS.fetch_resource_signed_headers,
-    handleFetchSignifyHeaders
-  );
-  handler.set(
-    CS_EVENTS.fetch_resource_sign_data,
-    handleFetchSignData
-  );
   handler.set(CS_EVENTS.fetch_resource_tab_signin, handleFetchTabSignin);
-  handler.set(CS_EVENTS.fetch_resource_credential, handleFetchCredential);
-
-  handler.set(CS_EVENTS.create_resource_data_attestation_credential, handleCreateAttestationCredential);
-  handler.set(CS_EVENTS.create_resource_issue_credentials, handleIssueCredentials);
 
   handler.set(CS_EVENTS.vendor_info_get_vendor_data, handleGetVendorData);
-  handler.set(
-    CS_EVENTS.vendor_info_provide_config_url,
-    handleAttemptSetVendorData
-  );
 
   handler.set(
     CS_EVENTS.authentication_check_agent_connection,
@@ -107,10 +83,6 @@ export function initCSHandler() {
   handler.set(
     CS_EVENTS.authentication_get_auth_data,
     handleGetAuthData
-  );
-  handler.set(
-    CS_EVENTS.authentication_get_session_info,
-    handleGetSessionInfo
   );
   handler.set(
     CS_EVENTS.authentication_clear_session,

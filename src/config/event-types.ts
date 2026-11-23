@@ -15,6 +15,8 @@ const EVENT_TYPE = {
   issue_confirm: "issue-confirm",
 };
 
+// Page ↔ extension protocol messages (`/signify/*`) do not use these events: they travel as
+// vlei-wallet-protocol runtime envelopes and are served by handlers/protocol.ts.
 export const CS_EVENTS = {
   action_icon_set: `${CS}-${EVENT_TYPE.action_icon}-set`,
   action_icon_unset: `${CS}-${EVENT_TYPE.action_icon}-unset`,
@@ -22,20 +24,13 @@ export const CS_EVENTS = {
   action_icon_unset_tab: `${CS}-${EVENT_TYPE.action_icon}-unset-tab`,
 
   fetch_resource_auto_signin_signature: `${CS}-${EVENT_TYPE.fetch_resource}-auto-signin-signature`,
-  fetch_resource_signed_headers: `${CS}-${EVENT_TYPE.fetch_resource}-signed-headers`,
-  fetch_resource_sign_data: `${CS}-${EVENT_TYPE.fetch_resource}-sign-data`,
   fetch_resource_tab_signin: `${CS}-${EVENT_TYPE.fetch_resource}-tab-signin`,
-  fetch_resource_credential: `${CS}-${EVENT_TYPE.fetch_resource}-credential`,
 
-  create_resource_data_attestation_credential: `${CS}-${EVENT_TYPE.create_resource}-data-attestation-credential`,
-  create_resource_issue_credentials: `${CS}-${EVENT_TYPE.create_resource}-issue-credentials`,
 
   vendor_info_get_vendor_data: `${CS}-${EVENT_TYPE.vendor_info}-get-vendor-data`,
-  vendor_info_provide_config_url: `${CS}-${EVENT_TYPE.vendor_info}-provide-config-url`,
 
   authentication_check_agent_connection: `${CS}-${EVENT_TYPE.authentication}-check-agent-connection`,
   authentication_get_auth_data: `${CS}-${EVENT_TYPE.authentication}-get-auth-data`,
-  authentication_get_session_info: `${CS}-${EVENT_TYPE.authentication}-get-session-info`,
   authentication_clear_session: `${CS}-${EVENT_TYPE.authentication}-clear-session`,
 } as const;
 

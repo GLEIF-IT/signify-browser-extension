@@ -1,17 +1,8 @@
 import { IHandler } from "@config/types";
-import { getDomainFromUrl } from "@shared/utils";
-import {
-  issueBatch,
-  summarizeBatch,
-  type IssueCredentialRequest,
-} from "@pages/background/services/credential-issuance";
-import { decide, getPendingSummary, requestApproval } from "@pages/background/services/issue-confirmation";
-import { getIssuingContext } from "@pages/background/services/issue-context";
-import { resetTimeoutAlarm } from "@pages/background/services/signify-connection";
+import { decide, getPendingSummary } from "@pages/background/services/issue-confirmation";
 
-interface IIssueCredentialsData {
-  credentials?: IssueCredentialRequest[];
-}
+// The issuance request itself (`/signify/credential/issue`) is served by handlers/protocol.ts.
+// These handlers answer the extension-owned confirmation window.
 
 interface IIssueRequestData {
   id?: string;
@@ -20,38 +11,6 @@ interface IIssueRequestData {
 interface IIssueDecisionData {
   id?: string;
   approved?: unknown;
-}
-
-/** Content-script message: validate, ask the user in an extension window, then issue the batch. */
-export async function handleIssueCredentials({
-  sendResponse,
-  url,
-  tabId,
-  data,
-}: IHandler<IIssueCredentialsData>) {
-  if (!data?.credentials) {
-    sendResponse({ error: { code: 400, message: "missing credentials", issued: [] } });
-    return;
-  }
-
-  try {
-    const { client, aidName } = await getIssuingContext({ origin: getDomainFromUrl(url!), tabId: tabId! });
-
-    const summary = await summarizeBatch(client, aidName, data.credentials);
-    const approved = await requestApproval(summary);
-    if (!approved) {
-      sendResponse({ error: { code: 403, message: "User rejected", issued: [] } });
-      return;
-    }
-
-    const credentials = await issueBatch(client, aidName, data.credentials);
-    resetTimeoutAlarm();
-    sendResponse({ data: { credentials } });
-  } catch (error: any) {
-    sendResponse({
-      error: { code: 503, message: error?.message, issued: error?.issued ?? [] },
-    });
-  }
 }
 
 /** Confirmation-page message: the summary to display for a pending request. */

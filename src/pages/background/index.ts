@@ -5,12 +5,16 @@ import { IMessage } from "@config/types";
 import { senderIsIssueConfirm, senderIsPopup } from "@pages/background/utils";
 import { setActionIcon } from "@shared/browser/action-utils";
 import { initCSHandler, initUIHandler, initIssueConfirmHandler } from "@pages/background/handlers";
+import { createProtocolListener } from "@pages/background/handlers/protocol";
+import { isRuntimeEnvelope } from "vlei-wallet-protocol/extension";
 
 console.log("Background script loaded");
 
 const csHandler = initCSHandler();
 const uiHandler = initUIHandler();
 const issueConfirmHandler = initIssueConfirmHandler();
+// Web page ↔ extension protocol (vlei-wallet-protocol), relayed by the content-script bridge.
+const protocolListener = createProtocolListener();
 const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
 function saveTimestamp() {
@@ -39,6 +43,8 @@ browser.runtime.onMessage.addListener(function (
   sender,
   sendResponse
 ) {
+  // webextension-polyfill sends the resolved value as the response.
+  if (isRuntimeEnvelope(message)) return protocolListener(message, sender);
   (async () => {
     // The issuance-confirmation window is an extension page in an active tab that is not the popup, so it
     // must be recognised first: otherwise its messages would be handled as content-script messages.

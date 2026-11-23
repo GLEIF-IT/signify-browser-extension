@@ -4,22 +4,6 @@ import { getDomainFromUrl } from "@shared/utils";
 import { IHandler, IIdentifier, ICredential, ISignin } from "@config/types";
 import { getCurrentUrl } from "@pages/background/utils";
 
-interface IFetchSignifyHeadersData {
-  url: string;
-  method: string;
-  headers: HeadersInit;
-}
-
-interface IFetchSignDataData {
-  message?: string;
-  items: string[];
-}
-
-interface IFetchCredentialData {
-  id: string;
-  includeCESR?: boolean;
-}
-
 interface ICreateIdentifierData {
   name: string;
 }
@@ -27,11 +11,6 @@ interface ICreateIdentifierData {
 interface ICreateSigninData {
   identifier?: IIdentifier;
   credential?: ICredential;
-}
-
-interface ICreateAttestationCredentialData {
-  credData: unknown;
-  schemaSaid: string;
 }
 
 interface IUpdateAutoSigninData {
@@ -67,71 +46,6 @@ export async function handleFetchAutoSigninSignature({
 
     sendResponse({
       data: isig,
-    });
-  } catch (error: any) {
-    sendResponse({
-      error: { code: 503, message: error?.message },
-    });
-  }
-}
-
-export async function handleFetchSignifyHeaders({
-  sendResponse,
-  url,
-  tabId,
-  data,
-}: IHandler<IFetchSignifyHeadersData>) {
-  if (!data) {
-    sendResponse({ error: { code: 400, message: "missing data" } });
-    return;
-  }
-  try {
-    // const signin = await signinResource.getDomainSigninByIssueeName(
-    //   url!,
-    //   aidName
-    // );
-    // if (!signin?.autoSignin) {
-    //   sendResponse({
-    //     data: {},
-    //   });
-    //   return;
-    // }
-    const isig = await signifyService.getSignedHeaders({
-      origin: getDomainFromUrl(url!),
-      rurl: data.url,
-      method: data.method,
-      headers: data.headers,
-      tabId: tabId!,
-      // signin,
-    });
-    sendResponse({
-      data: isig,
-    });
-  } catch (error: any) {
-    sendResponse({
-      error: { code: 503, message: error?.message },
-    });
-  }
-}
-
-export async function handleFetchSignData({
-  sendResponse,
-  url,
-  tabId,
-  data,
-}: IHandler<IFetchSignDataData>) {
-  if (!data) {
-    sendResponse({ error: { code: 400, message: "missing data" } });
-    return;
-  }
-  try {
-    const result = await signifyService.signData({
-      origin: getDomainFromUrl(url!),
-      items: data.items,
-      tabId: tabId!,
-    });
-    sendResponse({
-      data: result,
     });
   } catch (error: any) {
     sendResponse({
@@ -194,17 +108,6 @@ export async function handleFetchCredentials({ sendResponse }: IHandler) {
   }
 }
 
-export async function handleFetchCredential({ sendResponse, data }: IHandler<IFetchCredentialData>) {
-  if (!data) {
-    sendResponse({ error: { code: 400, message: "missing data" } });
-    return;
-  }
-  const cred = await signifyService.getCredential(data.id, data.includeCESR);
-  sendResponse({
-    data: { credential: cred ?? null },
-  });
-}
-
 export async function handleCreateIdentifier({ sendResponse, data }: IHandler<ICreateIdentifierData>) {
   if (!data) {
     sendResponse({ error: { code: 400, message: "missing data" } });
@@ -264,33 +167,6 @@ export async function handleCreateSignin({ sendResponse, data }: IHandler<ICreat
     }
     const storageSignins = await signinResource.getSignins();
     sendResponse({ data: { signins: storageSignins } });
-  }
-}
-
-export async function handleCreateAttestationCredential({
-  sendResponse,
-  url,
-  tabId,
-  data,
-}: IHandler<ICreateAttestationCredentialData>) {
-  if (!data) {
-    sendResponse({ error: { code: 400, message: "missing data" } });
-    return;
-  }
-  try {
-    const resp = await signifyService.createAttestationCredential({
-      origin: getDomainFromUrl(url!),
-      credData: data.credData,
-      schemaSaid: data.schemaSaid,
-      tabId: tabId!
-    });
-    sendResponse({
-      data: { ...resp },
-    });
-  } catch (error: any) {
-    sendResponse({
-      error: { code: 503, message: error?.message },
-    });
   }
 }
 

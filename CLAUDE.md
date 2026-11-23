@@ -53,7 +53,13 @@ via an enterprise policy (FileWave).
 
 ## Message Passing
 
-All messages use typed constants from `src/config/event-types.ts`. Prefix conventions:
+**Web page ↔ extension** (`/signify/*`): the `vlei-wallet-protocol` library (`github:GLEIF-IT/vlei-wallet-protocol#v0.1.1`).
+The content script runs `createContentBridge` (handshake, one reply per request, sign-in dialog as `local`
+handlers); requests travel to the background as runtime envelopes and are served by
+`src/pages/background/handlers/protocol.ts` (`createProtocolHandlers`, typed by `ProtocolHandlers`). Throw
+`HandlerError` there to send an error reply. To support a new page message, add a handler to that file.
+
+**Inside the extension**, messages use typed constants from `src/config/event-types.ts`. Prefix conventions:
 
 | Prefix | Direction |
 |---|---|

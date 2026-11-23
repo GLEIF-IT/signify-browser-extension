@@ -1,21 +1,8 @@
 import { Saider, type CredentialData, type SignifyClient } from "signify-ts";
+import type { IssueCredentialRequest, IssuedCredential } from "vlei-wallet-protocol/protocol";
 import { waitOperation } from "@src/shared/signify-utils";
 
-export interface IssueCredentialRequest {
-  schemaSaid: string;
-  registryName: string;
-  attributes: Record<string, unknown>;
-  edges?: Record<string, unknown>;
-  rules?: Record<string, unknown>;
-}
-
-export interface IssuedCredential {
-  said: string;
-  schemaSaid: string;
-  registryName: string;
-  issuer: string;
-  issuedAt: string | null;
-}
+export type { IssueCredentialRequest, IssuedCredential };
 
 export interface IssueSummary {
   issuer: { name: string; prefix: string };

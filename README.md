@@ -8,6 +8,7 @@ A secure browser extension for website authentication using KERIA agents and sig
 - [Architecture](#architecture)
 - [Security Considerations](#security-considerations)
 - [Troubleshooting](#troubleshooting)
+- [Web app ↔ extension protocol](#web-app--extension-protocol)
 - [Developer Guide (CLAUDE.md)](CLAUDE.md)
 
 ## Overview
@@ -15,7 +16,7 @@ A secure browser extension for website authentication using KERIA agents and sig
 This browser extension, initially implemented for Chromium browsers, uses [signify-ts][SIG_TS] to connect to a [KERIA][KERIA] agent and retrieve user AIDs and their associated keys and credentials. Those AIDs and credentials are used to sign in to enabled websites. Once a signin is associated with a website, it's stored in chrome store for future use.
 
 The primary goal of this extension is to provide a secure, zero trust, no shared secrets way to sign in to websites. This means avoiding sharing any secret between two parties including avoiding disclosure of private keys.
-The [polaris-web][POLARIS_WEB] library defines the API for sending messages to the Signify Browser Extension including requesting signed headers needed to authenticate to backend services supporting those signed headers. Beyond signed headers a website may request a credential presentation as an [ACDC][ACDC_SPEC].
+Web pages talk to the extension through the [polaris-web][POLARIS_WEB]-compatible protocol implemented by the `vlei-wallet-protocol` library (see [Web app ↔ extension protocol](#web-app--extension-protocol)), including requesting signed headers needed to authenticate to backend services supporting those signed headers. Beyond signed headers a website may request a credential presentation as an [ACDC][ACDC_SPEC].
 
 This browser extension adopts [Manifest V3][MANIFEST_V3] to take advantage of the new security features and performance improvements.
 
@@ -66,6 +67,20 @@ Note down the boot and agent URLs!
 6. If successful, you'll be taken to the main landing page ![image](https://github.com/user-attachments/assets/2be997e5-1135-436b-9a9b-9c09bf6d9852)
 
 
+## Web app ↔ extension protocol
+
+Both sides use the [`vlei-wallet-protocol`][VLEI_WALLET_PROTOCOL] library, installed from its git tag
+(`github:GLEIF-IT/vlei-wallet-protocol#v0.1.1`; `npm install` builds it). The protocol, its messages and errors are
+specified in that repository's `PROTOCOL_DEMO.md`; its `docs/examples/web-app` is a page to try the extension with,
+and its `npm run test:e2e` runs end-to-end tests against this extension's `dist/chrome`
+(`VLEI_EXTENSION_PATH=<path to dist/chrome>`).
+
+- Content script (`src/pages/content/index.tsx`): `createContentBridge` answers the handshake, shows the sign-in
+  dialog for `/signify/authorize*` and relays every other request to the background.
+- Background (`src/pages/background/handlers/protocol.ts`): one handler per supported message type behind
+  `createBackgroundRouter`; only the active tab is served. `/signify/authorize-auto-signin` is reserved and answered
+  as unsupported.
+
 ## Architecture
 
 The browser extension is composed of the following components:
@@ -111,6 +126,7 @@ By design, the following rules are enforced to ensure the security of the extens
 [PROVENANT]: https://provenant.net/
 [PROVENANT_BOUNTY]: https://docs.google.com/document/d/1mq82RDRGfoOMCs8sR8Cuj_hMC5i1_aP7e6DVqp8o13g/edit?usp=sharing
 [SIG_TS]: https://github.com/weboftrust/signify-ts
+[VLEI_WALLET_PROTOCOL]: https://github.com/GLEIF-IT/vlei-wallet-protocol
 
 ## Credential issuance — `/signify/credential/issue`
 
